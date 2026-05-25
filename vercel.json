@@ -1,0 +1,12 @@
+{
+  "rewrites": [
+    {
+      "source": "/",
+      "destination": "/Duro Group Website/index.html"
+    },
+    {
+      "source": "/(.*)",
+      "destination": "/Duro Group Website/$1"
+    }
+  ]
+}
