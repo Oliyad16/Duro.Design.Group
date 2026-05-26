@@ -133,12 +133,14 @@ function DisciplineRow({ name, desc }) {
 // One large image + caption block. Pure HTML; image-slot lets user drop a photo.
 function ProjectCard({ id, title, year, types, location, sf, award, client, services, permits, status, ratio = '16/10', dark = false, alignRight = false }) {
   const { open } = useProjectOverlay();
+  const imgs = (window.PROJECT_IMAGES && window.PROJECT_IMAGES[id]) || {};
   return (
     <div className="project" onClick={() => open(id)} data-cursor="view" data-cursor-label="View">
       <div className="project-frame" style={{ aspectRatio: ratio }}>
         <MediaWell
           id={`proj-${id}`}
           placeholder={`${title} — primary photo`}
+          src={imgs.card || imgs.hero}
           dark={dark}
           ratio={ratio}
           style={{ width: '100%', height: '100%' }}
@@ -256,7 +258,7 @@ function ScrollProgress() {
 
 // PhotoWell — wraps image-slot with a fallback caption visible in static captures.
 // User-facing drop placeholder still comes from image-slot itself.
-function PhotoWell({ id, placeholder, dark = false, ratio, style, className = '' }) {
+function PhotoWell({ id, placeholder, src, dark = false, ratio, style, className = '' }) {
   return (
     <div
       className={`photo-well ${dark ? 'dark' : ''} ${className}`}
@@ -266,6 +268,7 @@ function PhotoWell({ id, placeholder, dark = false, ratio, style, className = ''
       <image-slot
         id={id}
         placeholder={placeholder}
+        src={src}
         class={dark ? 'dark' : ''}
       ></image-slot>
     </div>
@@ -275,7 +278,7 @@ function PhotoWell({ id, placeholder, dark = false, ratio, style, className = ''
 // MediaWell — supports both image (poster) and video. video-slot sits on top
 // of image-slot; if a video is set, it plays over the image. Drops on the
 // wrapper route to the correct slot by file type.
-function MediaWell({ id, placeholder, dark = false, ratio, style, className = '' }) {
+function MediaWell({ id, placeholder, src, dark = false, ratio, style, className = '' }) {
   return (
     <div
       className={`photo-well media-well ${dark ? 'dark' : ''} ${className}`}
@@ -285,6 +288,7 @@ function MediaWell({ id, placeholder, dark = false, ratio, style, className = ''
       <image-slot
         id={`img-${id}`}
         placeholder={placeholder}
+        src={src}
         class={dark ? 'dark' : ''}
       ></image-slot>
       <video-slot

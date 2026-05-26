@@ -1,0 +1,15 @@
+# macOS
+.DS_Store
+**/.DS_Store
+
+# Claude Code local config
+.claude/
+
+# Source / brief materials (not deployed)
+Duro Info/
+Duro Project/
+DURO DESIGN GROUP WEBSITE Reqirement /
+Duro_Portfolio_Reel_Storyboard.docx
+
+# Image-slot persistence sidecar (drag-drop overrides)
+**/.image-slots.state.json

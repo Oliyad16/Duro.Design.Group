@@ -111,6 +111,45 @@ const CONTRACTING = {
 
 const PROJECT_BY_ID = Object.fromEntries(PROJECTS.map(p => [p.id, p]));
 
+// Image registry — wired to assets/projects/{id}/{slot}.jpg files.
+// Slots: hero (featured lead), card (index grid), detail (overlay lower-left),
+// context (overlay lower-right). A missing slot falls through to the drop placeholder.
+const PROJECT_IMAGES = {
+  'thurgood-marshall': {
+    hero:     'assets/projects/thurgood-marshall/hero.jpg',
+    card:     'assets/projects/thurgood-marshall/card.jpg',
+    detail:   'assets/projects/thurgood-marshall/detail.jpg',
+    context:  'assets/projects/thurgood-marshall/context.jpg',
+    archival: 'assets/projects/thurgood-marshall/archival.jpg', // WPA-era PS 103 schoolyard
+  },
+  'eastern-market': {
+    hero:    'assets/projects/eastern-market/hero.jpg',    // 2010 Italianate facade + market tents
+    card:    'assets/projects/eastern-market/card.jpg',    // working market interior
+    detail:  'assets/projects/eastern-market/detail.jpg',  // HABS-era B&W skylit hall
+    context: 'assets/projects/eastern-market/context.jpg', // entrance plaque detail
+  },
+  'aacw-museum': {
+    hero:     'assets/projects/aacw-museum/hero.jpg',
+    card:     'assets/projects/aacw-museum/card.jpg',
+    detail:   'assets/projects/aacw-museum/detail.jpg',   // restored Grimke with modern glass insertion
+    context:  'assets/projects/aacw-museum/context.jpg',
+    archival: 'assets/projects/aacw-museum/archival.jpg', // 1887 Phelps School B&W
+  },
+  'walter-pierce': {
+    hero:    'assets/projects/walter-pierce/hero.jpg',
+    card:    'assets/projects/walter-pierce/card.jpg',
+    detail:  'assets/projects/walter-pierce/detail.jpg',
+    context: 'assets/projects/walter-pierce/context.jpg',
+  },
+  'harbor-bank': {
+    hero:    'assets/projects/harbor-bank/hero.jpg',
+    card:    'assets/projects/harbor-bank/card.jpg',
+    detail:  'assets/projects/harbor-bank/detail.jpg',
+    context: 'assets/projects/harbor-bank/context.jpg',
+  },
+};
+window.PROJECT_IMAGES = PROJECT_IMAGES;
+
 // FeaturedProject — full-bleed hero block. Reads beforeAfter Tweak to swap the
 // hero image for a draggable before/after slider on supported projects.
 function FeaturedProject({ id }) {
@@ -133,6 +172,8 @@ function FeaturedProject({ id }) {
           <BeforeAfter
             beforeId={`ba-${id}-before`}
             afterId={`ba-${id}-after`}
+            beforeSrc={PROJECT_IMAGES[id]?.archival}
+            afterSrc={PROJECT_IMAGES[id]?.hero}
             beforeLabel="1877 · Archival"
             afterLabel="2024 · Restored"
             ratio="21/9"
@@ -142,6 +183,7 @@ function FeaturedProject({ id }) {
         <MediaWell
           id={`proj-${id}-lead`}
           placeholder={`${p.title} — primary photo or video`}
+          src={PROJECT_IMAGES[id]?.hero}
           ratio="21/9"
           className="project-frame"
         />
@@ -770,6 +812,7 @@ function ProjectsPage() {
                   <MediaWell
                     id={`pj-${p.id}`}
                     placeholder={`${p.title} — primary photo or video`}
+                    src={PROJECT_IMAGES[p.id]?.hero}
                     ratio="16/9"
                   />
                 </div>

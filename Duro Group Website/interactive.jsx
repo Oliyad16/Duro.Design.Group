@@ -79,6 +79,7 @@ function ProjectOverlay({ idx, onClose, onPrev, onNext }) {
                 <MediaWell
                   id={`ov-${p.id}`}
                   placeholder={`${p.title} — primary photo or video`}
+                  src={(window.PROJECT_IMAGES && window.PROJECT_IMAGES[p.id])?.hero}
                   ratio="21/9"
                 />
               </div>
@@ -117,10 +118,20 @@ function ProjectOverlay({ idx, onClose, onPrev, onNext }) {
             {/* Secondary media */}
             <div className="grid" style={{ marginBottom: 64 }}>
               <div style={{ gridColumn: '1 / span 7' }}>
-                <PhotoWell id={`ov-detail-${p.id}`} placeholder={`${p.title} — detail`} ratio="4/5" />
+                <PhotoWell
+                  id={`ov-detail-${p.id}`}
+                  placeholder={`${p.title} — detail`}
+                  src={(window.PROJECT_IMAGES && window.PROJECT_IMAGES[p.id])?.detail}
+                  ratio="4/5"
+                />
               </div>
               <div style={{ gridColumn: '8 / span 5' }}>
-                <PhotoWell id={`ov-context-${p.id}`} placeholder={`${p.title} — context`} ratio="4/5" />
+                <PhotoWell
+                  id={`ov-context-${p.id}`}
+                  placeholder={`${p.title} — context`}
+                  src={(window.PROJECT_IMAGES && window.PROJECT_IMAGES[p.id])?.context}
+                  ratio="4/5"
+                />
               </div>
             </div>
 
@@ -224,7 +235,7 @@ function ProjectCursor() {
 }
 
 // ─── Before / After slider ───────────────────────────────────────────
-function BeforeAfter({ beforeId = 'ba-before', afterId = 'ba-after', beforeLabel = 'Before', afterLabel = 'After', ratio = '16/9' }) {
+function BeforeAfter({ beforeId = 'ba-before', afterId = 'ba-after', beforeSrc, afterSrc, beforeLabel = 'Before', afterLabel = 'After', ratio = '16/9' }) {
   const ref = useRefI(null);
   const [x, setX] = useStateI(50);
   const drag = useRefI(false);
@@ -265,6 +276,7 @@ function BeforeAfter({ beforeId = 'ba-before', afterId = 'ba-after', beforeLabel
       <div className="compare-layer compare-before">
         <image-slot
           id={beforeId}
+          src={beforeSrc}
           placeholder={`${beforeLabel} — archival photo`}
           style={{ width: '100%', height: '100%' }}
         ></image-slot>
@@ -272,6 +284,7 @@ function BeforeAfter({ beforeId = 'ba-before', afterId = 'ba-after', beforeLabel
       <div className="compare-layer compare-after">
         <image-slot
           id={afterId}
+          src={afterSrc}
           placeholder={`${afterLabel} — restored photo`}
           style={{ width: '100%', height: '100%' }}
         ></image-slot>
