@@ -829,6 +829,27 @@ body.duro-ink-pure {
   --duro-ink: #0A0A0A;
 }
 
+/* ───── Dark theme ──────────────────────────────────────────────────────
+   Inverts the canvas to true black and lifts text/rules to white-warm.
+   Declared LAST among body themes so it wins specificity ties over
+   .duro-warm-paper. Patches the small handful of hardcoded hex values
+   that live outside the token system. */
+body.duro-night {
+  --duro-bg: #0A0A0A;
+  --duro-ink: #FAFAF7;
+  --duro-mute: #9A968D;
+  --duro-rule: #2A2A28;
+  --duro-dark: #FAFAF7;
+  --duro-bg-rgb: 10, 10, 10;
+}
+body.duro-night .photo-well { background: #161614; }
+body.duro-night .photo-well .photo-hint { color: #6B6B68; }
+body.duro-night .photo-well.dark { background: #FAFAF7; }
+body.duro-night .photo-well.dark .photo-hint { color: #6B6B68; }
+body.duro-night image-slot.archival { --is-bg: #1a1916; background: #1a1916; }
+body.duro-night image-slot.dark { --is-bg: #FAFAF7; --is-fg: #6B6B68; background: #FAFAF7; }
+body.duro-night .compare-label.right { background: rgba(10,10,10,0.85); }
+
 /* Print pdf */
 @media print {
   .hdr, .twk-panel { display: none; }

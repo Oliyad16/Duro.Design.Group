@@ -138,6 +138,7 @@ function App() {
     document.documentElement.style.setProperty('--duro-red', t.accent || '#E63027');
     document.body.classList.toggle('duro-warm-paper', t.paperTone === 'warm-paper');
     document.body.classList.toggle('duro-before-after', !!t.beforeAfter);
+    document.body.classList.add('duro-night');
     // Notify dynamic subscribers (FeaturedProject, etc.)
     window.__tweaks = t;
     window.dispatchEvent(new CustomEvent('tweaks-changed', { detail: t }));
