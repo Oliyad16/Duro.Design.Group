@@ -258,7 +258,7 @@ function ScrollProgress() {
 
 // PhotoWell — wraps image-slot with a fallback caption visible in static captures.
 // User-facing drop placeholder still comes from image-slot itself.
-function PhotoWell({ id, placeholder, src, dark = false, ratio, style, className = '' }) {
+function PhotoWell({ id, placeholder, src, fit, dark = false, ratio, style, className = '' }) {
   return (
     <div
       className={`photo-well ${dark ? 'dark' : ''} ${className}`}
@@ -269,6 +269,7 @@ function PhotoWell({ id, placeholder, src, dark = false, ratio, style, className
         id={id}
         placeholder={placeholder}
         src={src}
+        fit={fit}
         class={dark ? 'dark' : ''}
       ></image-slot>
     </div>
@@ -278,7 +279,7 @@ function PhotoWell({ id, placeholder, src, dark = false, ratio, style, className
 // MediaWell — supports both image (poster) and video. video-slot sits on top
 // of image-slot; if a video is set, it plays over the image. Drops on the
 // wrapper route to the correct slot by file type.
-function MediaWell({ id, placeholder, src, dark = false, ratio, style, className = '' }) {
+function MediaWell({ id, placeholder, src, videoSrc, poster, dark = false, ratio, style, className = '' }) {
   return (
     <div
       className={`photo-well media-well ${dark ? 'dark' : ''} ${className}`}
@@ -293,6 +294,8 @@ function MediaWell({ id, placeholder, src, dark = false, ratio, style, className
       ></image-slot>
       <video-slot
         id={`vid-${id}`}
+        src={videoSrc}
+        poster={poster || src}
         placeholder={`Drop video or paste URL — ${placeholder}`}
       ></video-slot>
     </div>

@@ -13,3 +13,9 @@ Duro_Portfolio_Reel_Storyboard.docx
 
 # Image-slot persistence sidecar (drag-drop overrides)
 **/.image-slots.state.json
+
+# AI-gen source PNGs — keep the optimized JPEG derivatives, not the 4K originals
+**/hero-source.png
+
+# Experimental standalone timelapse HTMLs at project root
+/Duro_Timelapse_*.html

@@ -150,6 +150,19 @@ const PROJECT_IMAGES = {
 };
 window.PROJECT_IMAGES = PROJECT_IMAGES;
 
+// Project-level video sources. Only populated for projects that have an
+// actual moving-image asset. The corresponding image stays as a poster
+// fallback (autoplay-blocked browsers, slow networks, before video loads).
+const PROJECT_VIDEOS = {
+  'harbor-bank': {
+    hero: 'assets/projects/harbor-bank/hero.mp4',
+  },
+  'aacw-museum': {
+    hero: 'assets/projects/aacw-museum/hero.mp4',
+  },
+};
+window.PROJECT_VIDEOS = PROJECT_VIDEOS;
+
 // FeaturedProject — full-bleed hero block. Reads beforeAfter Tweak to swap the
 // hero image for a draggable before/after slider on supported projects.
 function FeaturedProject({ id }) {
@@ -254,6 +267,7 @@ function HomePage() {
                   <PhotoWell
                     id="home-hero"
                     placeholder="Thurgood Marshall Center — façade, autumn light"
+                    src="assets/home/hero.jpg"
                     ratio="3/4"
                   />
                 </div>
@@ -478,8 +492,9 @@ function AboutPage() {
               <Reveal>
                 <PhotoWell
                   id="about-hero"
-                  placeholder="Archival B&W — DC civic building, c. 1920"
-                  dark
+                  placeholder="DURO Design Group logo"
+                  src="assets/brand/duro-logo-red.png"
+                  fit="contain"
                   ratio="3/4"
                 />
               </Reveal>
@@ -813,6 +828,7 @@ function ProjectsPage() {
                     id={`pj-${p.id}`}
                     placeholder={`${p.title} — primary photo or video`}
                     src={PROJECT_IMAGES[p.id]?.hero}
+                    videoSrc={PROJECT_VIDEOS[p.id]?.hero}
                     ratio="16/9"
                   />
                 </div>
