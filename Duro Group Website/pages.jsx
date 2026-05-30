@@ -197,6 +197,7 @@ function FeaturedProject({ id }) {
           id={`proj-${id}-lead`}
           placeholder={`${p.title} — primary photo or video`}
           src={PROJECT_IMAGES[id]?.hero}
+          videoSrc={PROJECT_VIDEOS[id]?.hero}
           ratio="21/9"
           className="project-frame"
         />

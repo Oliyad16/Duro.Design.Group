@@ -80,6 +80,7 @@ function ProjectOverlay({ idx, onClose, onPrev, onNext }) {
                   id={`ov-${p.id}`}
                   placeholder={`${p.title} — primary photo or video`}
                   src={(window.PROJECT_IMAGES && window.PROJECT_IMAGES[p.id])?.hero}
+                  videoSrc={(window.PROJECT_VIDEOS && window.PROJECT_VIDEOS[p.id])?.hero}
                   ratio="21/9"
                 />
               </div>

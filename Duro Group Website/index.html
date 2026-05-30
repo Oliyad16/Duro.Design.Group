@@ -618,6 +618,8 @@ body.no-scroll { overflow: hidden; }
 .project-meta {
   display: flex;
   flex-direction: column;
+  align-items: center;
+  text-align: center;
   gap: 6px;
   margin-top: 24px;
 }
@@ -638,7 +640,7 @@ body.no-scroll { overflow: hidden; }
   height: 1px;
   background: var(--duro-red);
   transform: scaleX(0);
-  transform-origin: left center;
+  transform-origin: center center;
   transition: transform 280ms ease;
 }
 .project:hover .project-title::after { transform: scaleX(1); }

@@ -134,6 +134,7 @@ function DisciplineRow({ name, desc }) {
 function ProjectCard({ id, title, year, types, location, sf, award, client, services, permits, status, ratio = '16/10', dark = false, alignRight = false }) {
   const { open } = useProjectOverlay();
   const imgs = (window.PROJECT_IMAGES && window.PROJECT_IMAGES[id]) || {};
+  const vids = (window.PROJECT_VIDEOS && window.PROJECT_VIDEOS[id]) || {};
   return (
     <div className="project" onClick={() => open(id)} data-cursor="view" data-cursor-label="View">
       <div className="project-frame" style={{ aspectRatio: ratio }}>
@@ -141,6 +142,7 @@ function ProjectCard({ id, title, year, types, location, sf, award, client, serv
           id={`proj-${id}`}
           placeholder={`${title} — primary photo`}
           src={imgs.card || imgs.hero}
+          videoSrc={vids.hero}
           dark={dark}
           ratio={ratio}
           style={{ width: '100%', height: '100%' }}

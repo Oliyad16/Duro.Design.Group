@@ -160,17 +160,41 @@
 
     connectedCallback() {
       this._cap.textContent = 'Add video';
-      // Poster from attribute
-      const poster = this.getAttribute('poster');
-      if (poster) { this._poster.src = poster; this._poster.style.display = 'block'; this._cap.classList.add('has-poster'); }
-      // Persisted URL?
+      this._hydrate();
+    }
+
+    // React-friendly: attributes (src/poster) often arrive a render tick AFTER
+    // the element mounts, so connectedCallback alone misses them. Re-hydrate on
+    // change — mirrors image-slot.js's attributeChangedCallback so author-set
+    // src never loses the race. Persisted/user state still wins over author src.
+    attributeChangedCallback(name, oldVal, newVal) {
+      if (oldVal === newVal) return;
+      if (!this.shadowRoot) return; // pre-construction; connectedCallback handles it
+      if (name === 'poster' || name === 'src') this._hydrate();
+    }
+
+    _hydrate() {
+      // A user drop/paste (or a previously persisted URL) always wins over the
+      // author-supplied src attribute — never clobber live playback.
       const id = this.getAttribute('id');
       let persisted = null;
       if (id) {
         try { persisted = localStorage.getItem('video-slot:' + id); } catch {}
       }
-      const src = persisted || this.getAttribute('src');
-      if (src) this._setSrc(src, false);
+      const desired = persisted || this.getAttribute('src');
+
+      // Poster: show it whenever there's no active video yet.
+      const poster = this.getAttribute('poster');
+      if (poster && this._poster.src !== poster) this._poster.src = poster;
+      if (poster && !this._src && !desired) {
+        this._poster.style.display = 'block';
+        this._cap.classList.add('has-poster');
+      }
+
+      // Only (re)set the video source if it actually changed.
+      if (desired && desired !== this._src) {
+        this._setSrc(desired, false);
+      }
     }
 
     _promptUrl() {
