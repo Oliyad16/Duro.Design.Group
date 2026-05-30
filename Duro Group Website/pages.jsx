@@ -249,14 +249,8 @@ function HomePage() {
                 </h1>
               </Reveal>
               <Reveal delay={250}>
-                <div className="body-l mute" style={{ maxWidth: '46ch', marginBottom: 48 }}>
-                  The DMV's integrated architecture and engineering firm — built for the way public agencies actually procure, permit, and deliver work.
-                </div>
-              </Reveal>
-              <Reveal delay={350}>
-                <div style={{ display: 'flex', gap: 40, flexWrap: 'wrap', alignItems: 'baseline' }}>
+                <div style={{ display: 'flex', gap: 40, flexWrap: 'wrap', alignItems: 'baseline', marginTop: 24 }}>
                   <TextLink to="/projects">See our work</TextLink>
-                  <TextLink to="/contact" ghost>Request SF-330 portfolio</TextLink>
                 </div>
               </Reveal>
             </div>
@@ -277,61 +271,6 @@ function HomePage() {
           </div>
         </Shell>
       </section>
-
-      {/* STAT BAND */}
-      <Section sm data-screen-label="Home/Stats">
-        <Rule />
-        <div className="grid" style={{ padding: '80px 0' }}>
-          <div style={{ gridColumn: '1 / span 4' }}>
-            <Reveal><StatBlock num="5" caption="Disciplines under one roof — Architecture · MEP · Structural · Civil · Permitting" /></Reveal>
-          </div>
-          <div style={{ gridColumn: '5 / span 4' }}>
-            <Reveal delay={120}><StatBlock num="10+" caption="Years supporting local, state, and regional government projects" /></Reveal>
-          </div>
-          <div style={{ gridColumn: '9 / span 4' }}>
-            <Reveal delay={240}><StatBlock num="1" caption="Signature. One accountable team. One source of truth." /></Reveal>
-          </div>
-        </div>
-        <Rule />
-      </Section>
-
-      {/* AGENCIES SERVED */}
-      <Section sm data-screen-label="Home/Agencies">
-        <div className="grid" style={{ alignItems: 'start' }}>
-          <div style={{ gridColumn: '1 / span 4' }}>
-            <Eyebrow style={{ marginBottom: 32 }}>Public Clients</Eyebrow>
-            <h2 className="display display-s" style={{ marginBottom: 24 }}>
-              We work with the agencies that <em><span className="u">steward</span></em> public space.
-            </h2>
-            <p className="body-m mute" style={{ maxWidth: '34ch' }}>
-              Local, state, and regional. From small-scale municipal upgrades to multi-phase infrastructure work — we know the procurement cycle, the agency contacts, and the regulatory steps that come next.
-            </p>
-          </div>
-          <div style={{ gridColumn: '6 / span 7' }}>
-            <Rule />
-            {AGENCIES.map((a, i) => (
-              <Reveal key={a.short} delay={i * 60}>
-                <div style={{
-                  display: 'grid',
-                  gridTemplateColumns: '1fr auto',
-                  padding: '24px 0',
-                  borderBottom: '1px solid var(--duro-rule)',
-                  alignItems: 'baseline',
-                  gap: 24,
-                }}>
-                  <div className="serif" style={{ fontSize: 'clamp(20px, 2vw, 28px)', letterSpacing: '-0.01em' }}>
-                    {a.name}
-                  </div>
-                  <div className="smallcaps mute">{a.short}</div>
-                </div>
-              </Reveal>
-            ))}
-            <p className="smallcaps mute" style={{ marginTop: 24 }}>
-              + Federal, state, municipal, cultural & educational clients across DC, MD, VA
-            </p>
-          </div>
-        </div>
-      </Section>
 
       {/* SELECTED WORK */}
       <section data-screen-label="Home/Work">
@@ -368,51 +307,33 @@ function HomePage() {
         </Shell>
       </section>
 
-      {/* WHY INTEGRATED */}
+      {/* WHY INTEGRATED — single pull-quote, no body copy */}
       <Section data-screen-label="Home/Integrated">
         <div className="grid">
-          <div style={{ gridColumn: '1 / span 7' }}>
+          <div style={{ gridColumn: '2 / span 10' }}>
             <Eyebrow style={{ marginBottom: 40 }}>The Integrated Firm</Eyebrow>
             <PullQuote>
               "One signature on every drawing.<br/>
               One team accountable for every decision."
             </PullQuote>
           </div>
-          <div style={{ gridColumn: '9 / span 4', paddingTop: 32 }}>
-            <p className="body-l" style={{ marginBottom: 24 }}>
-              Subconsultant coordination is the number-one source of risk on government projects. Schedules slip in the gaps between firms. Drawings disagree. Permit reviewers send everyone back to start.
-            </p>
-            <p className="body-l mute">
-              DURO carries architecture, MEP, structural, civil, and permitting in-house. Every drawing leaves our office with one signature and one set of stamps — ours.
-            </p>
-          </div>
         </div>
       </Section>
 
-      {/* PRACTICE AREAS PREVIEW */}
+      {/* PRACTICE AREAS — one-line list, full detail on /services */}
       <Section sm data-screen-label="Home/Practice">
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', marginBottom: 64 }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', marginBottom: 48 }}>
           <div>
             <Eyebrow style={{ marginBottom: 24 }}>Practice Areas</Eyebrow>
             <h2 className="display display-m" style={{ maxWidth: '18ch' }}>
-              Eleven services.<br/>One contract.<br/>One signature.
+              Eleven services.<br/>One contract.
             </h2>
           </div>
           <TextLink to="/services" ghost>Services in detail</TextLink>
         </div>
 
-        <div>
-          <DisciplineRow name="Architecture" desc="Programming, schematic through construction documents, construction administration." />
-          <DisciplineRow name="Interior Architecture" desc="Tenant fit-outs, space planning, finishes and FF&E." />
-          <DisciplineRow name="Landscape Architecture" desc="Site, plaza, park, and civic-space design — coordinated with civil and MEP." />
-          <DisciplineRow name="MEP Engineering" desc="In-house mechanical, electrical, plumbing. Energy modeling, BEPS, LEED, net-zero pathways." />
-          <DisciplineRow name="Structural Engineering" desc="System design, analysis, existing-building assessments, renovation and retrofit." />
-          <DisciplineRow name="Civil Engineering" desc="Erosion & sediment control, stormwater, GAR plans, utility plans, traffic & public-space." />
-          <DisciplineRow name="Historic Preservation & Adaptive Reuse" desc="HPRB, SHPO, CFA, Section 106. Conditions assessments and treatment plans." />
-          <DisciplineRow name="Feasibility & Existing Conditions" desc="Pre-design assessments to confirm scope, budget, and program before commitments." />
-          <DisciplineRow name="Construction Administration" desc="Field observation, RFI response, submittal review, change-order management." />
-          <DisciplineRow name="Permitting & Regulatory Strategy" desc="DOB, CFA, DDOT, DC Water, MDE, VDOT, HPRB. Packages, expediting, agency liaison." />
-          <DisciplineRow name="Permit Expediting" desc="In-house expediting — not a referral. Same team that drew it walks it through review." />
+        <div className="serif mute" style={{ fontSize: 'clamp(18px, 1.5vw, 22px)', lineHeight: 1.8, maxWidth: '72ch' }}>
+          Architecture · Interior Architecture · Landscape Architecture · MEP Engineering · Structural Engineering · Civil Engineering · Historic Preservation &amp; Adaptive Reuse · Feasibility &amp; Existing Conditions · Construction Administration · Permitting &amp; Regulatory Strategy · Permit Expediting
         </div>
       </Section>
 
@@ -422,13 +343,10 @@ function HomePage() {
           <div className="grid" style={{ alignItems: 'start' }}>
             <div style={{ gridColumn: '1 / span 5' }}>
               <Eyebrow red style={{ marginBottom: 32 }}>Procurement Readiness</Eyebrow>
-              <h2 className="display display-l" style={{ marginBottom: 32 }}>
+              <h2 className="display display-l" style={{ marginBottom: 48 }}>
                 Built for the way <em><span className="u">public agencies</span></em> buy.
               </h2>
-              <p className="body-l" style={{ maxWidth: '36ch', color: 'rgba(250,250,247,0.78)' }}>
-                Registered, certified, and ready to respond. We carry the same compliance posture as firms ten times our size — with the responsiveness of one that isn't.
-              </p>
-              <div style={{ marginTop: 48 }}>
+              <div>
                 <TextLink to="/contact">Request our SF-330 portfolio</TextLink>
               </div>
             </div>
@@ -504,21 +422,15 @@ function AboutPage() {
         </Shell>
       </section>
 
-      {/* The firm */}
+      {/* The firm — one editorial line */}
       <Section>
         <div className="grid">
           <div style={{ gridColumn: '1 / span 4' }}>
             <Eyebrow>The Firm</Eyebrow>
           </div>
           <div style={{ gridColumn: '5 / span 7' }}>
-            <p className="display display-s" style={{ marginBottom: 40, fontFamily: 'var(--font-serif)' }}>
-              DURO Design Group is a full-service architecture and engineering firm working at local, state, and regional levels across the DMV.
-            </p>
-            <p className="body-l" style={{ marginBottom: 24 }}>
-              Our portfolio is anchored in historic preservation and adaptive reuse — buildings that hold public memory and deserve careful stewardship. We work with the Department of General Services, Prince William Water Authority, State Department entities, and mission-driven private clients.
-            </p>
-            <p className="body-l mute">
-              Every drawing that leaves our office carries one signature. Architecture, MEP, structural, civil, and permitting under one roof means schedules don't slip into the gaps between firms, and the same team that designs your building also gets it through review and into the ground.
+            <p className="display display-s" style={{ fontFamily: 'var(--font-serif)' }}>
+              A full-service architecture and engineering firm working across the DMV — anchored in <em>historic preservation</em> and <em>adaptive reuse.</em>
             </p>
           </div>
         </div>
@@ -531,10 +443,10 @@ function AboutPage() {
           <Eyebrow style={{ marginBottom: 64 }}>Approach</Eyebrow>
           <div className="grid" style={{ rowGap: 88 }}>
             {[
-              { n: '01', t: 'Integrated by design', d: 'Five disciplines, one accountable team. We carry MEP, structural, civil, and permitting in-house — not as subconsultants, but as colleagues across the studio.' },
-              { n: '02', t: 'Stewards of historic fabric', d: 'Most of our work touches buildings older than living memory. We treat them as artifacts first and as projects second — surveying, documenting, and preserving what is there before we add what is new.' },
-              { n: '03', t: 'Resilient and net-zero ready', d: 'BEPS, LEED, and net-zero pathways are baked into our MEP scope. We design buildings that will still be efficient in 2050 — not retrofitted to be.' },
-              { n: '04', t: 'Accountable to the public', d: 'Our clients are governments and public institutions. We answer to citizens, taxpayers, and the agencies that steward shared resources — and we calibrate our process accordingly.' },
+              { n: '01', t: 'Integrated by design', d: 'Five disciplines, one accountable team. In-house, not subconsulted.' },
+              { n: '02', t: 'Stewards of historic fabric', d: 'Buildings older than living memory, treated as artifacts first.' },
+              { n: '03', t: 'Resilient and net-zero ready', d: 'BEPS, LEED, and net-zero pathways baked into scope — not retrofitted later.' },
+              { n: '04', t: 'Accountable to the public', d: 'Calibrated to the procurement cycle, the review process, and the people who pay for it.' },
             ].map((p, i) => (
               <div key={p.n} style={{ gridColumn: (i % 2 === 0) ? '1 / span 5' : '7 / span 5' }}>
                 <Reveal delay={i * 80}>
@@ -603,67 +515,67 @@ function ServicesPage() {
     {
       n: '01', name: 'Architecture',
       photo: 'Walter Pierce Park — pavilion',
-      body: 'Full-service architecture for public agencies, cultural institutions, and educational clients. We have led work for the DC Department of General Services and similar agencies across the DMV — from programming and feasibility through construction administration. Our process is calibrated to the way public agencies actually procure, review, and accept work.',
+      body: 'Programming through construction administration. Calibrated to how public agencies procure.',
       bullets: ['Programming & feasibility', 'Schematic design', 'Design development', 'Construction documents', 'Construction administration', 'Cost-estimating coordination', 'Stakeholder engagement'],
     },
     {
       n: '02', name: 'Interior Architecture',
       photo: 'Interior — civic finishes detail',
-      body: 'Tenant fit-outs, civic-space interiors, and adaptive reuse — coordinated tightly with our MEP and structural teams. Furniture, fixtures, equipment, finishes, signage, lighting, and acoustic planning all under one contract.',
+      body: 'Civic-space interiors and adaptive reuse — coordinated with MEP and structural in-house.',
       bullets: ['Space planning & programming', 'Furniture, fixtures, equipment (FF&E)', 'Finishes & materials selection', 'Signage & wayfinding', 'Acoustic & lighting planning'],
     },
     {
       n: '03', name: 'Landscape Architecture',
       photo: 'Walter Pierce Park — site plan',
-      body: 'Civic plazas, parks, streetscapes, and site design — always coordinated with our civil engineering team so site drainage, ADA paths, grading, and planting are designed as one. We have completed landscape work for the DC Department of General Services and other municipal clients.',
+      body: 'Plazas, parks, and streetscapes — designed as one with our civil team.',
       bullets: ['Site design & site planning', 'Park & plaza design', 'Streetscape & public-realm', 'Planting design', 'ADA & path-of-travel'],
     },
     {
       n: '04', name: 'MEP Engineering',
       photo: 'Mechanical room — equipment as architecture',
-      body: 'In-house mechanical, electrical, and plumbing — not a subconsultant relationship. Our MEP team sits twenty feet from our architects, which means coordination happens at the desk, not in a meeting two weeks later. We deliver energy modeling, BEPS pathways, LEED and net-zero strategies, and the calculations that prove them.',
+      body: 'Mechanical, electrical, plumbing — in-house, twenty feet from our architects.',
       bullets: ['Mechanical system design', 'Electrical & lighting design', 'Plumbing system design', 'Fire protection coordination', 'Load calculations & system analysis', 'Energy modeling & BEPS', 'LEED / net-zero pathways'],
     },
     {
       n: '05', name: 'Structural Engineering',
       photo: 'Historic structure — load survey',
-      body: 'Historic structure assessments are the most demanding form of structural engineering — every assumption has to be tested, every concealed condition surveyed. Our team works from light-gauge framing through heavy timber, and from seismic retrofit through full structural redesign of buildings that pre-date modern codes.',
+      body: 'From light-gauge framing through heavy timber. Specializing in historic structure assessments.',
       bullets: ['Structural system design', 'Structural analysis & calculations', 'Existing building assessments', 'Renovation & retrofit design', 'Heavy timber, steel, light gauge'],
     },
     {
       n: '06', name: 'Civil Engineering & Site Design',
       photo: 'Site plan — stormwater + grading',
-      body: 'Civil work that respects the building. Stormwater management plans, Green Area Ratio compliance, grading, site utilities, and the coordination with landscape architects and DDOT that makes the difference between a site that looks designed and one that looks engineered.',
+      body: 'Stormwater, GAR, grading, utilities. Coordinated with landscape and DDOT.',
       bullets: ['Erosion & sediment control plans', 'Stormwater management plans', 'Green Area Ratio (GAR) plans', 'Utility plans', 'Traffic control & public-space plans'],
     },
     {
       n: '07', name: 'Historic Preservation & Adaptive Reuse',
       photo: 'Eastern Market — stonework detail',
-      body: 'We have led HPRB, SHPO, and CFA reviews across the District and Maryland — from Section 106 consultation through final treatment. Our preservation work begins with conditions assessments and treatment plans grounded in the Secretary of the Interior\'s Standards. We document what is there, identify what is character-defining, and engineer the interventions that let historic buildings serve their next hundred years.',
+      body: 'HPRB, SHPO, CFA, Section 106. Grounded in the Secretary of the Interior\'s Standards.',
       bullets: ['HPRB / SHPO / CFA review', 'Section 106 consultation', 'Conditions assessments', 'Treatment plans & specifications', 'Historic structure reports', 'Adaptive reuse planning'],
     },
     {
       n: '08', name: 'Feasibility & Existing Conditions',
       photo: 'Field survey — assessment in progress',
-      body: 'Before scope commitments, before budgets, before the agency commits public dollars — we tell you what is actually there. Existing-conditions documentation, structural assessments, MEP capacity surveys, and feasibility memos that make the next phase defensible.',
+      body: 'Conditions documentation, capacity surveys, and feasibility memos before scope commitments.',
       bullets: ['Feasibility studies', 'Existing conditions assessments', 'Pre-design memos', 'Budget & schedule validation', 'Test fits & space studies'],
     },
     {
       n: '09', name: 'Construction Administration',
       photo: 'Site visit — punch list',
-      body: 'The same team that designs your building gets it built. Field observation, RFI response, submittal review, change-order management, and substantial-completion certification. CA is where most public-sector projects lose schedule — we treat it as a deliverable, not a courtesy.',
+      body: 'The same team that designed it gets it built. CA as a deliverable, not a courtesy.',
       bullets: ['Field observation & reporting', 'RFI & submittal management', 'Change-order review', 'Pay application review', 'Punch-list & substantial completion'],
     },
     {
       n: '10', name: 'Permitting & Regulatory Strategy',
       photo: 'Permit set — review markup',
-      body: 'We pull permits in DC, Maryland, and Virginia regularly. We know the reviewers. We know which questions get asked. We prepare full permit packages, expedite where the law allows, and serve as agency liaison — DCRA, MDE, VDOT, HPRB, DDOT, DC Water.',
+      body: 'DC, Maryland, Virginia. DCRA, MDE, VDOT, HPRB, DDOT, DC Water — handled in-house.',
       bullets: ['Building permits', 'Stormwater, utility, tree permits', 'Department of Transportation permits', 'DC Water service permits', 'HPRB / CFA submissions', 'Agency liaison'],
     },
     {
       n: '11', name: 'Permit Expediting',
       photo: 'Plan-review counter',
-      body: 'In-house expediting — not a referral, not a separate vendor. The same team that drew the documents walks them through plan review. This shortens the cycle and eliminates the most common cause of permit delays: a question the original designer needs to answer.',
+      body: 'The team that drew the documents walks them through plan review. No referrals.',
       bullets: ['Plan-review accompaniment', 'Comment-response coordination', 'Multi-agency walk-through', 'Revision package preparation'],
     },
   ];
@@ -681,11 +593,6 @@ function ServicesPage() {
                   Eleven services.<br/>One roof.<br/>One <em><span className="u">accountable</span></em> team.
                 </h1>
               </Reveal>
-              <Reveal delay={150}>
-                <p className="body-l mute" style={{ maxWidth: '54ch' }}>
-                  Most architecture firms managing a public-sector project run three to seven subconsultants. We don't. Every drawing that leaves our office carries one signature and one set of stamps — ours.
-                </p>
-              </Reveal>
             </div>
           </div>
         </Shell>
@@ -702,7 +609,7 @@ function ServicesPage() {
                   The Preservation Pre-Screen.
                 </h3>
                 <p className="body-l mute" style={{ maxWidth: '46ch' }}>
-                  Two weeks. One fixed fee. A complete HPRB / SHPO / CFA pre-submission package: feasibility memo, regulatory matrix, conditions assessment, and a written go / no-go recommendation. For developers and agencies asking whether a building can be saved.
+                  Two weeks, one fixed fee — a complete HPRB / SHPO / CFA pre-submission package with a written go / no-go recommendation.
                 </p>
               </div>
               <div style={{ gridColumn: '9 / span 4' }}>
