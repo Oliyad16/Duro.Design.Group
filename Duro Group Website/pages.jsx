@@ -8,6 +8,7 @@ const PROJECTS = [
     title: 'Justice Thurgood Marshall Center',
     year: 2024,
     types: 'Cultural · Historic Preservation',
+    categories: ['Cultural', 'Preservation'],
     location: 'Baltimore, MD',
     sf: '22,000 SF',
     cost: '$15,000,000',
@@ -25,6 +26,7 @@ const PROJECTS = [
     title: 'Eastern Market Preservation',
     year: 2023,
     types: 'Historic Preservation · Architecture',
+    categories: ['Civic', 'Preservation'],
     location: 'Washington, DC',
     sf: '7,000 SF',
     cost: '$1,200,000',
@@ -41,6 +43,7 @@ const PROJECTS = [
     title: 'African American Civil War Museum',
     year: 2023,
     types: 'Cultural · Historic Preservation',
+    categories: ['Cultural', 'Preservation'],
     location: 'Washington, DC',
     sf: '15,000 SF',
     cost: '$3,000,000',
@@ -57,6 +60,7 @@ const PROJECTS = [
     title: 'Walter Pierce Park',
     year: 2024,
     types: 'Park Upgrades · Landscape',
+    categories: ['Civic'],
     location: 'Washington, DC',
     sf: '20,000 SF',
     cost: '$700,000',
@@ -73,6 +77,7 @@ const PROJECTS = [
     title: 'Harbor Bank of Maryland HQ',
     year: 2025,
     types: 'Bank Fit-out · Architecture',
+    categories: ['Private'],
     location: 'Baltimore, MD',
     sf: '5,000 SF',
     cost: '$1,000,000',
@@ -85,6 +90,8 @@ const PROJECTS = [
     blurb: 'The renovation redefines the bank\'s physical identity through a contemporary architectural language that merges functionality, brand expression, and community values. The headquarters becomes a model for all Harbor Bank facilities.',
   },
 ];
+
+const PROJECT_CATEGORIES = ['All', 'Cultural', 'Civic', 'Preservation', 'Private'];
 
 // ═══════════ AGENCIES + CONTRACT INFO ═══════════
 const AGENCIES = [
@@ -696,85 +703,119 @@ function ServicesPage() {
 }
 
 // ═══════════ PROJECTS INDEX ═══════════
+// Drummond-style filterable grid: image-first cards, 4:3 landscape, minimal
+// per-card text (title · location · meta line). Full project context lives
+// behind "VIEW PROJECT →" via the overlay.
 function ProjectsPage() {
   const { open } = useProjectOverlay();
+  const [filter, setFilter] = useStateP('All');
+
+  const filtered = filter === 'All'
+    ? PROJECTS
+    : PROJECTS.filter(p => (p.categories || []).includes(filter));
+
   return (
     <main data-screen-label="04 Projects">
       <section className="section-sm" style={{ paddingTop: 'clamp(40px, 6vw, 80px)' }}>
         <Shell>
           <Eyebrow red style={{ marginBottom: 40 }}>Projects · Selected</Eyebrow>
-          <div className="grid" style={{ alignItems: 'end' }}>
-            <div style={{ gridColumn: '1 / span 9' }}>
-              <Reveal>
-                <h1 className="display display-xl" style={{ marginBottom: 48 }}>
-                  Buildings that carry<br/>a <em><span className="u">civic weight</span></em>.
-                </h1>
-              </Reveal>
-              <Reveal delay={120}>
-                <p className="body-l mute" style={{ maxWidth: '52ch' }}>
-                  A chronologically-ordered selection of recent work — public agencies, cultural institutions, and historic structures across DC, Maryland, and Virginia.
-                </p>
-              </Reveal>
-            </div>
+          <Reveal>
+            <h1 className="display display-xl" style={{ marginBottom: 48 }}>
+              Buildings that carry<br/>a <em><span className="u">civic weight</span></em>.
+            </h1>
+          </Reveal>
+        </Shell>
+      </section>
+
+      {/* Filter pills */}
+      <section style={{ paddingBottom: 'clamp(40px, 5vw, 64px)' }}>
+        <Shell>
+          <div style={{
+            display: 'flex',
+            gap: 'clamp(24px, 3vw, 40px)',
+            flexWrap: 'wrap',
+            alignItems: 'baseline',
+            paddingTop: 32,
+            paddingBottom: 32,
+            borderTop: '1px solid var(--duro-rule)',
+            borderBottom: '1px solid var(--duro-rule)',
+          }}>
+            {PROJECT_CATEGORIES.map(cat => {
+              const isActive = filter === cat;
+              const count = cat === 'All'
+                ? PROJECTS.length
+                : PROJECTS.filter(p => (p.categories || []).includes(cat)).length;
+              return (
+                <button
+                  key={cat}
+                  onClick={() => setFilter(cat)}
+                  className="pj-filter"
+                  style={{
+                    appearance: 'none',
+                    border: 0,
+                    background: 'transparent',
+                    padding: '4px 0',
+                    cursor: 'pointer',
+                    fontFamily: 'var(--font-sans)',
+                    fontSize: 13,
+                    letterSpacing: '0.14em',
+                    textTransform: 'uppercase',
+                    color: isActive ? 'var(--duro-ink)' : 'var(--duro-mute)',
+                    borderBottom: isActive ? '1px solid var(--duro-red)' : '1px solid transparent',
+                    transition: 'color 200ms ease, border-color 200ms ease',
+                  }}
+                >
+                  {cat} <span style={{ color: 'var(--duro-mute)', marginLeft: 6, fontSize: 11 }}>{count}</span>
+                </button>
+              );
+            })}
           </div>
         </Shell>
       </section>
 
-      {/* Stacked project entries */}
-      <section style={{ paddingTop: 'clamp(80px, 10vw, 140px)' }}>
-        {PROJECTS.map((p, i) => (
-          <article key={p.id} style={{ paddingBottom: 'clamp(80px, 10vw, 160px)' }} data-screen-label={`Projects/${p.title}`}>
-            <Shell>
-              <Reveal>
-                <div
+      {/* Grid of project cards — 2-column on desktop, 1-column on mobile */}
+      <section style={{ paddingBottom: 'clamp(120px, 14vw, 200px)' }}>
+        <Shell>
+          <div className="pj-grid">
+            {filtered.map((p) => (
+              <Reveal key={p.id}>
+                <article
+                  className="pj-card"
                   onClick={() => open(p.id)}
-                  style={{ cursor: 'pointer' }}
                   data-cursor="view"
                   data-cursor-label="View case"
+                  style={{ cursor: 'pointer' }}
+                  data-screen-label={`Projects/${p.title}`}
                 >
                   <MediaWell
                     id={`pj-${p.id}`}
                     placeholder={`${p.title} — primary photo or video`}
                     src={PROJECT_IMAGES[p.id]?.hero}
                     videoSrc={PROJECT_VIDEOS[p.id]?.hero}
-                    ratio="16/9"
+                    ratio="4/3"
                   />
-                </div>
-              </Reveal>
-              <div className="grid" style={{ marginTop: 48 }}>
-                <div style={{ gridColumn: '1 / span 6' }}>
-                  {p.award && <Eyebrow red style={{ marginBottom: 20 }}>{p.award}</Eyebrow>}
-                  <h2 className="display display-m" style={{ marginBottom: 16 }}>
-                    <span className="project-title">{p.title}</span>
-                  </h2>
-                  <div className="smallcaps" style={{ color: 'var(--duro-red)', marginBottom: 16 }}>{p.client}</div>
-                  <p className="body-l" style={{ marginBottom: 24, maxWidth: '40ch' }}>{p.dek}</p>
-                  <ProjectOpenButton id={p.id} />
-                </div>
-                <div style={{ gridColumn: '8 / span 5' }}>
-                  <div className="smallcaps mute" style={{ lineHeight: 2 }}>
-                    <div><span style={{ color: 'var(--duro-ink)' }}>Sector</span>  ·  {p.sector}</div>
-                    <div><span style={{ color: 'var(--duro-ink)' }}>Location</span>  ·  {p.location}</div>
-                    <div><span style={{ color: 'var(--duro-ink)' }}>Size</span>  ·  {p.sf}</div>
-                    <div><span style={{ color: 'var(--duro-ink)' }}>Cost</span>  ·  {p.cost}</div>
-                    <div><span style={{ color: 'var(--duro-ink)' }}>Status</span>  ·  {p.status}</div>
-                    <div style={{ marginTop: 12 }}>
-                      <span style={{ color: 'var(--duro-ink)' }}>Services</span>
-                      <div style={{ marginTop: 4 }}>{p.services.join(' · ')}</div>
+                  <div className="pj-card-meta">
+                    <h2 className="pj-card-title">
+                      <span className="project-title">{p.title}</span>
+                    </h2>
+                    <div className="pj-card-loc">
+                      <span aria-hidden="true" style={{ marginRight: 6 }}>↳</span>{p.location}
                     </div>
-                    {p.permits && p.permits.length > 0 && (
-                      <div style={{ marginTop: 12 }}>
-                        <span style={{ color: 'var(--duro-ink)' }}>Permitting</span>
-                        <div style={{ marginTop: 4 }}>{p.permits.join(' · ')}</div>
-                      </div>
-                    )}
+                    <div className="pj-card-stats">
+                      {p.year} · {p.types.split(' · ')[0]} · {p.sf}
+                    </div>
                   </div>
-                  <p className="body-m" style={{ marginTop: 32 }}>{p.blurb}</p>
-                </div>
-              </div>
-            </Shell>
-          </article>
-        ))}
+                </article>
+              </Reveal>
+            ))}
+          </div>
+
+          {filtered.length === 0 && (
+            <div style={{ padding: '80px 0', textAlign: 'center', color: 'var(--duro-mute)' }} className="smallcaps">
+              No projects in this category yet.
+            </div>
+          )}
+        </Shell>
       </section>
 
       {/* Archive prompt */}
