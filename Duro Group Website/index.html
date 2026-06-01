@@ -803,6 +803,31 @@ select {
 .dark-block .rule { background: rgba(250, 250, 247, 0.15); }
 .dark-block .eyebrow { color: rgba(250, 250, 247, 0.6); }
 
+/* ───── Light section — for work zones ─────
+   Inverts the local color tokens within the section so that text,
+   rules, eyebrows, and project metadata all read correctly on a
+   warm off-white background. Used to break the page into a dark
+   hero / light work zone / dark footer rhythm. */
+.section-light {
+  background: #FAFAF7;
+  color: #171717;
+  --duro-bg: #FAFAF7;
+  --duro-bg-rgb: 250, 250, 247;
+  --duro-ink: #171717;
+  --duro-mute: #6B6B68;
+  --duro-rule: #E4E2DC;
+}
+.section-light .mute { color: var(--duro-mute); }
+.section-light .rule,
+.section-light hr { background: var(--duro-rule); }
+.section-light .eyebrow { color: var(--duro-mute); }
+.section-light .eyebrow-red { color: var(--duro-red); }
+/* Photo-well in light section — light frame, dark hint text */
+.section-light .photo-well { background: #EFECE4; }
+.section-light .photo-well .photo-hint { color: #8a8780; }
+/* Project-title hover still works (it uses var(--duro-red) which is global) */
+.section-light .project-title { color: var(--duro-ink); }
+
 /* Award strip */
 .award-row {
   display: grid;

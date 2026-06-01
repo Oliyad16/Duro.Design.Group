@@ -279,8 +279,8 @@ function HomePage() {
         </Shell>
       </section>
 
-      {/* SELECTED WORK */}
-      <section data-screen-label="Home/Work">
+      {/* SELECTED WORK — light zone, the work breathes against off-white */}
+      <section className="section-light" data-screen-label="Home/Work" style={{ paddingTop: 'clamp(80px, 10vw, 120px)', paddingBottom: 'clamp(120px, 14vw, 200px)' }}>
         <Shell>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', marginBottom: 64 }}>
             <Eyebrow>Selected Work · 2023 — 2025</Eyebrow>
@@ -727,8 +727,8 @@ function ProjectsPage() {
         </Shell>
       </section>
 
-      {/* Filter pills */}
-      <section style={{ paddingBottom: 'clamp(40px, 5vw, 64px)' }}>
+      {/* Filter pills — light zone start */}
+      <section className="section-light" style={{ paddingTop: 'clamp(40px, 5vw, 64px)', paddingBottom: 'clamp(40px, 5vw, 64px)' }}>
         <Shell>
           <div style={{
             display: 'flex',
@@ -774,7 +774,7 @@ function ProjectsPage() {
       </section>
 
       {/* Grid of project cards — 2-column on desktop, 1-column on mobile */}
-      <section style={{ paddingBottom: 'clamp(120px, 14vw, 200px)' }}>
+      <section className="section-light" style={{ paddingBottom: 'clamp(120px, 14vw, 200px)' }}>
         <Shell>
           <div className="pj-grid">
             {filtered.map((p) => (
