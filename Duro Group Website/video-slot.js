@@ -36,11 +36,15 @@
       outline:2px solid var(--vs-accent, #E63027); outline-offset:-2px;
       background:rgba(230,48,39,.06); pointer-events:none; z-index:5;
     }
-    .well { position:absolute; inset:0; width:100%; height:100%; }
+    .well { position:absolute; inset:0; width:100%; height:100%; background:#0a0a0a; }
     video, img.poster {
       position:absolute; inset:0; width:100%; height:100%;
-      object-fit:cover; display:block;
+      display:block;
     }
+    /* Show the whole video frame (no crop); letterbox on the black well.
+       Poster still image fills the frame so the still looks intentional. */
+    video { object-fit:contain; }
+    img.poster { object-fit:cover; }
     .cap {
       position:absolute; right:14px; top:14px;
       display:flex; align-items:center; gap:6px;
@@ -60,12 +64,16 @@
       font-size:9px; letter-spacing:.18em; text-transform:uppercase;
       padding:4px 8px; border-radius:1px; z-index:3;
       pointer-events:none;
+      display:none !important;   /* editor affordance — hidden in production */
     }
     .ctrl {
       position:absolute; right:14px; bottom:14px; z-index:4;
       display:flex; gap:6px; opacity:0; transition: opacity 200ms ease;
     }
-    :host(:hover) .ctrl { opacity:1; }
+    /* Editor controls reveal only when the host opts in via [data-editable]. */
+    :host([data-editable]:hover) .ctrl { opacity:1; }
+    :host(:not([data-editable])) .ctrl { display:none; }
+    :host(:not([data-editable])) .cap { display:none; }
     .ctrl button {
       appearance:none; border:0; cursor:pointer;
       background:rgba(0,0,0,.55); color:#fff;

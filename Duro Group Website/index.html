@@ -11,14 +11,14 @@
 
 <style>
 :root {
-  /* Brand */
-  --duro-bg: #FAFAF7;          /* warm off-white, museum walls */
-  --duro-ink: #171717;         /* near-black */
-  --duro-red: #E63027;         /* DURO Red */
-  --duro-mute: #6B6B68;        /* muted text */
-  --duro-rule: #E4E2DC;        /* hairline rules */
-  --duro-dark: #171717;        /* dark block bg */
-  --duro-bg-rgb: 250, 250, 247;
+  /* Brand — black canvas / red accent (client redesign, June 2026) */
+  --duro-bg: #0A0A0A;          /* near-black canvas */
+  --duro-ink: #FAFAF7;         /* warm white text */
+  --duro-red: #F4291C;         /* DURO Red — matches client wordmark */
+  --duro-mute: #9A968D;        /* muted text */
+  --duro-rule: #2A2A28;        /* hairline rules */
+  --duro-dark: #FAFAF7;        /* "dark block" inverts → light */
+  --duro-bg-rgb: 10, 10, 10;
 
   /* Type */
   --font-serif: 'Fraunces', 'GT Sectra', 'Tiempos Headline', 'Times New Roman', serif;
@@ -98,16 +98,18 @@ a {
 /* Italic + red underline combo (use sparingly — for "the" emphatic word) */
 .u em, .u i, em.u, i.u { color: inherit; }
 
-.display-xl  { font-size: clamp(56px, 9.4vw, 128px); }
-.display-l   { font-size: clamp(48px, 7.2vw,  96px); }
-.display-m   { font-size: clamp(40px, 5.4vw,  72px); }
-.display-s   { font-size: clamp(32px, 4.2vw,  56px); }
+/* Type scale calibrated to the client's ~940px design canvas (his PDFs are
+   941pt wide). Caps kept modest so wide viewports don't balloon past the comp. */
+.display-xl  { font-size: clamp(48px, 4.6vw, 68px); }
+.display-l   { font-size: clamp(42px, 3.8vw, 56px); }
+.display-m   { font-size: clamp(40px, 3.4vw, 50px); }
+.display-s   { font-size: clamp(30px, 2.6vw, 38px); }
 
 .serif { font-family: var(--font-serif); }
 
-.body-l { font-size: 19px; line-height: 1.55; }
-.body-m { font-size: 17px; line-height: 1.6;  }
-.body-s { font-size: 15px; line-height: 1.6;  }
+.body-l { font-size: 16px; line-height: 1.6; }
+.body-m { font-size: 15px; line-height: 1.6; }
+.body-s { font-size: 14px; line-height: 1.6; }
 
 .mute { color: var(--duro-mute); }
 
@@ -162,7 +164,7 @@ a {
 
 /* Layout */
 .shell {
-  max-width: 1440px;
+  max-width: 1600px;
   margin: 0 auto;
   padding: 0 var(--page-pad);
 }
@@ -182,73 +184,70 @@ a {
 }
 
 @media (max-width: 760px) {
-  .grid { grid-template-columns: repeat(6, 1fr); }
+  /* Stack everything in a single column on phones. Inline grid-column spans
+     authored against the 12-col desktop grid would otherwise overlap. */
+  .grid { grid-template-columns: 1fr; }
+  .grid > * { grid-column: 1 / -1 !important; }
 }
 
-/* Header */
+/* Header — black bar, red hairline rule beneath (client comp) */
 .hdr {
   position: sticky;
   top: 0;
   z-index: 50;
-  background: rgba(var(--duro-bg-rgb), 0.85);
-  -webkit-backdrop-filter: saturate(180%) blur(18px);
-  backdrop-filter: saturate(180%) blur(18px);
-  border-bottom: 1px solid transparent;
-  transition: border-color 200ms ease, background-color 200ms ease;
+  background: var(--duro-bg);
+  border-bottom: 2px solid var(--duro-red);
+  transition: background-color 200ms ease;
 }
-.hdr.scrolled { border-bottom-color: var(--duro-rule); }
 .hdr-inner {
-  height: 76px;
+  height: 88px;
   display: flex;
   align-items: center;
   justify-content: space-between;
   padding: 0 var(--page-pad);
-  max-width: 1440px;
+  max-width: 1600px;
   margin: 0 auto;
 }
 
+/* Wordmark lockup — heavy "DURO" over tracked "DESIGN GROUP" outline.
+   Matches the red PNG the client supplied. Rendered as type so it stays
+   crisp and re-colors with the accent token. */
 .logo {
-  font-family: var(--font-serif);
-  font-weight: 500;
-  font-size: 22px;
-  letter-spacing: -0.01em;
   display: inline-flex;
-  align-items: baseline;
-  gap: 8px;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 1px;
   cursor: pointer;
-  color: var(--duro-ink);
+  line-height: 1;
+  color: var(--duro-red);
 }
-.logo-dot {
-  display: inline-block;
-  width: 8px;
-  height: 8px;
-  background: var(--duro-red);
-  border-radius: 1px;
-  transform: translateY(-2px);
+.logo-word {
+  font-family: var(--font-sans);
+  font-weight: 800;
+  font-size: 30px;
+  letter-spacing: -0.02em;
+  line-height: 0.9;
 }
 .logo-sub {
   font-family: var(--font-sans);
-  font-size: 11px;
+  font-size: 9px;
   font-weight: 500;
-  letter-spacing: 0.16em;
+  letter-spacing: 0.42em;
   text-transform: uppercase;
-  color: var(--duro-mute);
-  margin-left: 12px;
-  padding-left: 12px;
-  border-left: 1px solid var(--duro-rule);
-  align-self: center;
+  color: var(--duro-red);
+  padding-left: 2px;
 }
 
 .nav {
   display: flex;
   align-items: center;
-  gap: clamp(20px, 3vw, 40px);
+  gap: clamp(20px, 3vw, 44px);
 }
 .nav-link {
   font-family: var(--font-sans);
-  font-size: 12px;
+  font-size: 13px;
   font-weight: 500;
-  letter-spacing: 0.14em;
+  letter-spacing: 0.12em;
   text-transform: uppercase;
   color: var(--duro-ink);
   position: relative;
@@ -286,11 +285,335 @@ a {
   color: var(--duro-bg);
 }
 
-@media (max-width: 880px) {
-  .logo-sub { display: none; }
-  .nav { gap: 16px; }
-  .nav .nav-link:not(.always) { display: none; }
+@media (max-width: 720px) {
+  .nav { gap: 14px; }
+  .nav-link { font-size: 11px; letter-spacing: 0.08em; }
+  .logo-word { font-size: 24px; }
 }
+
+/* ───── Page title — giant white heading anchored to the right edge ─────
+   Used on Work / About / Services / Contact (per client comps). Bold sans,
+   sits just under the red header rule, right-aligned. */
+.page-title {
+  font-family: var(--font-sans);
+  font-weight: 800;
+  font-size: clamp(44px, 3.4vw, 56px);
+  line-height: 0.92;
+  letter-spacing: -0.03em;
+  color: var(--duro-ink);
+  text-align: right;
+}
+.page-title-row {
+  padding-top: clamp(28px, 4vw, 56px);
+}
+
+/* ───── Loading screen — black, centered tagline + red wordmark ───── */
+.loader {
+  position: fixed;
+  inset: 0;
+  z-index: 200;
+  background: #000;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 28px;
+  opacity: 1;
+  transition: opacity 600ms ease;
+}
+.loader.gone { opacity: 0; pointer-events: none; }
+.loader-tag {
+  font-family: var(--font-serif);
+  font-style: italic;
+  font-size: clamp(15px, 2vw, 19px);
+  letter-spacing: 0.01em;
+  color: var(--duro-red);
+}
+.loader-mark { display: flex; flex-direction: column; align-items: center; gap: 4px; }
+.loader-word {
+  font-family: var(--font-sans);
+  font-weight: 800;
+  font-size: clamp(48px, 8vw, 88px);
+  letter-spacing: -0.02em;
+  color: var(--duro-red);
+  line-height: 0.9;
+}
+.loader-sub {
+  font-family: var(--font-sans);
+  font-size: clamp(11px, 1.4vw, 15px);
+  font-weight: 500;
+  letter-spacing: 0.5em;
+  text-transform: uppercase;
+  color: var(--duro-red);
+  padding-left: 0.5em;
+}
+
+/* ───── Home hero carousel — full-bleed project rotator ───── */
+.carousel {
+  position: relative;
+  width: 100%;
+  height: clamp(420px, 62vh, 680px);
+  overflow: hidden;
+  background: #111;
+}
+.carousel-slide {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  transition: opacity 900ms ease;
+}
+.carousel-slide.active { opacity: 1; }
+/* The .photo-well wrapper (from MediaWell) must fill the slide so the
+   image-slot inside it has a non-zero height to render into. */
+.carousel-slide .photo-well { position: absolute; inset: 0; }
+.carousel-slide image-slot,
+.carousel-slide video-slot {
+  position: absolute;
+  inset: 0;
+  width: 100% !important;
+  height: 100% !important;
+}
+.carousel-slide video-slot { z-index: 2; --vs-accent: var(--duro-red); }
+.carousel-scrim {
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  background: linear-gradient(180deg, rgba(0,0,0,0.35) 0%, rgba(0,0,0,0) 32%, rgba(0,0,0,0) 55%, rgba(0,0,0,0.6) 100%);
+  pointer-events: none;
+}
+.carousel-coords {
+  position: absolute;
+  top: clamp(20px, 3vw, 36px);
+  left: clamp(20px, 4vw, 44px);
+  z-index: 4;
+  font-family: var(--font-sans);
+  font-size: 12px;
+  letter-spacing: 0.06em;
+  color: rgba(250,250,247,0.75);
+  line-height: 1.5;
+}
+.carousel-caption {
+  position: absolute;
+  left: clamp(20px, 4vw, 44px);
+  bottom: clamp(20px, 3vw, 40px);
+  z-index: 4;
+}
+.carousel-caption .c-title {
+  font-family: var(--font-sans);
+  font-weight: 800;
+  font-size: clamp(26px, 3.2vw, 42px);
+  letter-spacing: -0.02em;
+  color: #fff;
+  line-height: 1;
+}
+.carousel-caption .c-loc {
+  font-family: var(--font-sans);
+  font-size: 13px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.85);
+  margin-top: 10px;
+}
+.carousel-controls {
+  position: absolute;
+  right: clamp(20px, 4vw, 44px);
+  bottom: clamp(24px, 3vw, 44px);
+  z-index: 5;
+  display: flex;
+  align-items: center;
+  gap: 28px;
+}
+.carousel-count {
+  font-family: var(--font-sans);
+  font-size: 14px;
+  letter-spacing: 0.1em;
+  color: rgba(255,255,255,0.85);
+  font-variant-numeric: tabular-nums;
+}
+.carousel-arrow {
+  appearance: none;
+  background: transparent;
+  border: 0;
+  color: #fff;
+  cursor: pointer;
+  font-size: 26px;
+  line-height: 1;
+  padding: 4px 8px;
+  transition: color 200ms ease, transform 200ms ease;
+}
+.carousel-arrow:hover { color: var(--duro-red); }
+.carousel-arrow.prev:hover { transform: translateX(-3px); }
+.carousel-arrow.next:hover { transform: translateX(3px); }
+
+/* ───── Work-index thumbnail grid (top cluster of /work) ───── */
+/* Constrain the Work content so the page stays proportional to the others
+   instead of stretching the full 1600px shell into a very tall layout. */
+.work-wrap { max-width: 1180px; margin: 0 auto; }
+.work-thumbs {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: clamp(12px, 1.5vw, 20px);
+}
+@media (max-width: 720px) { .work-thumbs { grid-template-columns: repeat(2, 1fr); } }
+.work-thumb {
+  position: relative;
+  aspect-ratio: 4/3;
+  overflow: hidden;
+  background: #161614;
+  cursor: pointer;
+}
+.work-thumb .photo-well,
+.work-feature-main .photo-well { position: absolute; inset: 0; }
+.work-thumb image-slot,
+.work-thumb video-slot {
+  position: absolute; inset: 0;
+  width: 100% !important; height: 100% !important;
+  transition: transform 600ms cubic-bezier(0.2,0.7,0.2,1);
+}
+.work-thumb video-slot { z-index: 2; --vs-accent: var(--duro-red); }
+.work-thumb:hover image-slot,
+.work-thumb:hover video-slot { transform: scale(1.05); }
+.work-thumb-label {
+  position: absolute;
+  left: 12px; bottom: 12px;
+  z-index: 3;
+  font-family: var(--font-sans);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: #fff;
+  opacity: 0;
+  transition: opacity 240ms ease;
+  text-shadow: 0 1px 8px rgba(0,0,0,0.6);
+}
+.work-thumb:hover .work-thumb-label { opacity: 1; }
+
+/* Featured work block — big media LEFT, stacked same-project thumbs RIGHT. */
+.work-feature {
+  display: grid;
+  grid-template-columns: 1fr clamp(160px, 22%, 280px);
+  gap: clamp(12px, 1.5vw, 20px);
+  align-items: stretch;
+}
+@media (max-width: 720px) {
+  .work-feature { grid-template-columns: 1fr; }
+}
+.work-feature-main {
+  position: relative;
+  aspect-ratio: 4/3;   /* matches the 4:3 project videos so they fill with no bars */
+  overflow: hidden;
+  background: #161614;
+  cursor: pointer;
+}
+.work-feature-main image-slot,
+.work-feature-main video-slot {
+  position: absolute; inset: 0;
+  width: 100% !important; height: 100% !important;
+}
+.work-feature-main video-slot { z-index: 2; --vs-accent: var(--duro-red); }
+.work-feature-main .wf-caption {
+  position: absolute; left: 24px; right: 24px; bottom: 24px; z-index: 4;
+  text-shadow: 0 1px 12px rgba(0,0,0,0.7);
+}
+/* Gradient scrim so the caption reads over light video frames (e.g. line drawings). */
+.work-feature-main::after {
+  content: "";
+  position: absolute; left: 0; right: 0; bottom: 0; height: 45%;
+  background: linear-gradient(180deg, rgba(0,0,0,0) 0%, rgba(0,0,0,0.6) 100%);
+  z-index: 3; pointer-events: none;
+}
+.work-feature-main .wf-title {
+  font-family: var(--font-sans); font-weight: 800;
+  font-size: clamp(24px, 3vw, 40px); letter-spacing: -0.02em;
+  color: #fff; line-height: 1;
+}
+.work-feature-main .wf-loc {
+  font-family: var(--font-sans); font-size: 12px; letter-spacing: 0.14em;
+  text-transform: uppercase; color: rgba(255,255,255,0.85); margin-top: 8px;
+}
+.work-feature-side {
+  display: grid; grid-template-rows: repeat(3, 1fr);
+  gap: clamp(12px, 1.5vw, 20px);
+}
+.work-feature-side .work-thumb { aspect-ratio: auto; }
+/* On phones the side stacks below the big media as a 3-up row of 4:3 cards. */
+@media (max-width: 720px) {
+  .work-feature-side { grid-template-rows: none; grid-template-columns: repeat(3, 1fr); }
+  .work-feature-side .work-thumb { aspect-ratio: 4/3; }
+}
+
+/* ───── Accordion / dropdown (About sections, Services capabilities) ───── */
+.acc {
+  border-top: 1px solid var(--duro-rule);
+}
+.acc:last-of-type { border-bottom: 1px solid var(--duro-rule); }
+.acc-head {
+  width: 100%;
+  appearance: none;
+  background: transparent;
+  border: 0;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  padding: clamp(22px, 2.6vw, 34px) 0;
+  text-align: left;
+  color: var(--duro-ink);
+  transition: color 200ms ease;
+}
+.acc-head:hover { color: var(--duro-red); }
+.acc-head:hover .acc-icon { border-color: var(--duro-red); color: var(--duro-red); }
+.acc-num {
+  font-family: var(--font-sans);
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: 0.14em;
+  color: var(--duro-mute);
+  margin-right: 18px;
+  flex: 0 0 auto;
+}
+.acc-title {
+  font-family: var(--font-sans);
+  font-weight: 700;
+  font-size: clamp(22px, 2.6vw, 34px);
+  letter-spacing: -0.02em;
+  line-height: 1.05;
+  flex: 1 1 auto;
+}
+/* +/− indicator drawn with two bars; the vertical bar collapses when open */
+.acc-icon {
+  flex: 0 0 auto;
+  position: relative;
+  width: 30px; height: 30px;
+  border: 1px solid var(--duro-rule);
+  border-radius: 50%;
+  transition: border-color 200ms ease, transform 320ms ease;
+}
+.acc-icon::before, .acc-icon::after {
+  content: "";
+  position: absolute;
+  background: currentColor;
+  top: 50%; left: 50%;
+  transition: transform 320ms cubic-bezier(0.2,0.7,0.2,1), opacity 200ms ease;
+}
+.acc-icon::before { width: 12px; height: 1.5px; transform: translate(-50%, -50%); }       /* horizontal */
+.acc-icon::after  { width: 1.5px; height: 12px; transform: translate(-50%, -50%); }       /* vertical   */
+.acc.open .acc-icon { transform: rotate(180deg); }
+.acc.open .acc-icon::after { transform: translate(-50%, -50%) scaleY(0); opacity: 0; }     /* → minus    */
+.acc-body {
+  overflow: hidden;
+  max-height: 0;
+  opacity: 0;
+  transition: max-height 420ms cubic-bezier(0.2,0.7,0.2,1), opacity 320ms ease, padding 420ms ease;
+}
+.acc.open .acc-body {
+  max-height: 1600px;
+  opacity: 1;
+  padding-bottom: clamp(20px, 2.4vw, 32px);
+}
+.acc-body-inner { max-width: 74ch; }
 
 /* Image slot styling — make our photo placeholders look editorial */
 image-slot {
@@ -360,6 +683,10 @@ image-slot.dark { --is-bg: #1a1a1a; --is-fg: #8b8b88; background: #1a1a1a; }
   padding-top: 88px;
   padding-bottom: 48px;
   margin-top: 0;
+}
+@media (max-width: 720px) {
+  .ftr-grid { grid-template-columns: 1fr !important; text-align: center; gap: 28px !important; }
+  .ftr-grid > * { text-align: center !important; }
 }
 
 /* Fade-in on mount */
@@ -962,11 +1289,8 @@ body.duro-night .compare-label.right { background: rgba(10,10,10,0.85); }
 <!-- Tweak defaults persist via host -->
 <script>
 window.TWEAK_DEFAULTS = /*EDITMODE-BEGIN*/{
-  "accent": "#E63027",
-  "paperTone": "warm-paper",
-  "logoMark": "block",
-  "heroLayout": "split",
-  "beforeAfter": true
+  "accent": "#F4291C",
+  "beforeAfter": false
 }/*EDITMODE-END*/;
 </script>
 

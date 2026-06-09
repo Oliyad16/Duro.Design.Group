@@ -167,676 +167,412 @@ const PROJECT_VIDEOS = {
   'aacw-museum': {
     hero: 'assets/projects/aacw-museum/hero.mp4',
   },
+  'eastern-market': {
+    hero: 'assets/projects/eastern-market/Eastern-market-Video.mp4',
+  },
+  'thurgood-marshall': {
+    hero: 'assets/projects/thurgood-marshall/Thurgood-Marshall.mp4',
+  },
 };
 window.PROJECT_VIDEOS = PROJECT_VIDEOS;
 
-// FeaturedProject — full-bleed hero block. Reads beforeAfter Tweak to swap the
-// hero image for a draggable before/after slider on supported projects.
-function FeaturedProject({ id }) {
-  const p = PROJECT_BY_ID[id];
+// Approx site coordinates for the hero overlay (decorative, per comp).
+const PROJECT_COORDS = {
+  'walter-pierce': ['38.9220° N', '77.0430° W'],
+  'thurgood-marshall': ['39.3070° N', '76.6360° W'],
+  'eastern-market': ['38.8870° N', '76.9960° W'],
+  'aacw-museum': ['38.9170° N', '77.0250° W'],
+  'harbor-bank': ['39.2900° N', '76.6120° W'],
+};
+
+// HeroCarousel — full-bleed auto-rotating project rotator. Image (or video)
+// fills the frame; geo-coords top-left, project name + city bottom-left,
+// 01/06 counter + prev/next arrows bottom-right. Clicking a slide opens it.
+function HeroCarousel({ ids }) {
   const { open } = useProjectOverlay();
-  // Read tweak from window — set by App on body via class. Simpler: read
-  // localStorage written by useTweaks.
-  const [beforeAfter, setBA] = React.useState(false);
+  const [i, setI] = React.useState(0);
+  const n = ids.length;
+  const go = (d) => setI((prev) => (prev + d + n) % n);
+
   React.useEffect(() => {
-    const read = () => setBA(!!(window.__tweaks && window.__tweaks.beforeAfter));
-    read();
-    window.addEventListener('tweaks-changed', read);
-    return () => window.removeEventListener('tweaks-changed', read);
-  }, []);
+    const t = setInterval(() => setI((prev) => (prev + 1) % n), 6000);
+    return () => clearInterval(t);
+  }, [n]);
+
+  const activeId = ids[i];
+  const p = PROJECT_BY_ID[activeId];
+  const coords = PROJECT_COORDS[activeId] || [];
 
   return (
-    <div className="project" onClick={() => open(id)} data-cursor={beforeAfter ? null : 'view'} data-cursor-label="View case">
-      {beforeAfter ? (
-        <div className="project-frame" onClick={(e) => e.stopPropagation()} style={{ cursor: 'ew-resize' }}>
-          <BeforeAfter
-            beforeId={`ba-${id}-before`}
-            afterId={`ba-${id}-after`}
-            beforeSrc={PROJECT_IMAGES[id]?.archival}
-            afterSrc={PROJECT_IMAGES[id]?.hero}
-            beforeLabel="1877 · Archival"
-            afterLabel="2024 · Restored"
-            ratio="21/9"
+    <div className="carousel" data-screen-label="Home/Hero">
+      {ids.map((id, idx) => (
+        <div key={id} className={`carousel-slide ${idx === i ? 'active' : ''}`}>
+          <MediaWell
+            id={`hero-${id}`}
+            placeholder={`${PROJECT_BY_ID[id].title} — hero`}
+            src={PROJECT_IMAGES[id]?.hero}
+            videoSrc={PROJECT_VIDEOS[id]?.hero}
+            ratio={null}
           />
         </div>
-      ) : (
-        <MediaWell
-          id={`proj-${id}-lead`}
-          placeholder={`${p.title} — primary photo or video`}
-          src={PROJECT_IMAGES[id]?.hero}
-          videoSrc={PROJECT_VIDEOS[id]?.hero}
-          ratio="21/9"
-          className="project-frame"
-        />
-      )}
-      <Shell style={{ padding: 0 }}>
-        <div className="grid" style={{ marginTop: 32 }}>
-          <div style={{ gridColumn: '1 / span 7' }}>
-            {p.award && <Eyebrow red style={{ marginBottom: 16 }}>{p.award}</Eyebrow>}
-            <h3 className="display display-m" style={{ marginBottom: 16 }}>
-              <span className="project-title">{p.title}</span>
-            </h3>
-            <div className="project-caption">{p.types} · {p.location} · {p.sf}</div>
-          </div>
-          <div style={{ gridColumn: '8 / span 5' }}>
-            <p className="body-m mute" style={{ marginBottom: 24 }}>{p.dek}</p>
-            <button
-              className="tlink"
-              onClick={(e) => { e.stopPropagation(); open(id); }}
-              style={{ border: 0, background: 'transparent', padding: '4px 0' }}
-            >
-              <span>View project</span>
-              <span className="arrow">→</span>
-            </button>
-          </div>
+      ))}
+      <div className="carousel-scrim" />
+      {coords.length > 0 && (
+        <div className="carousel-coords">
+          <div>{coords[0]}</div>
+          <div>{coords[1]}</div>
         </div>
-      </Shell>
+      )}
+      <div
+        className="carousel-caption"
+        onClick={() => open(activeId)}
+        data-cursor="view" data-cursor-label="View"
+        style={{ cursor: 'pointer' }}
+      >
+        <div className="c-title">{p.title}</div>
+        <div className="c-loc">{p.location}</div>
+      </div>
+      <div className="carousel-controls">
+        <button className="carousel-arrow prev" aria-label="Previous" onClick={() => go(-1)}>←</button>
+        <span className="carousel-count">{String(i + 1).padStart(2, '0')} / {String(n).padStart(2, '0')}</span>
+        <button className="carousel-arrow next" aria-label="Next" onClick={() => go(1)}>→</button>
+      </div>
     </div>
   );
 }
 
 // ═══════════ HOME ═══════════
+// Per client comp: full-bleed hero carousel, then a two-column block —
+// serif headline left, founding paragraph right.
 function HomePage() {
+  // Video-backed projects lead; Walter Pierce (no video) sits last.
+  const heroIds = ['thurgood-marshall', 'aacw-museum', 'eastern-market', 'harbor-bank', 'walter-pierce'];
   return (
     <main data-screen-label="01 Home">
-      {/* HERO */}
-      <section className="section-sm" data-screen-label="Home/Hero" style={{ paddingTop: 'clamp(40px, 6vw, 80px)', paddingBottom: 'clamp(80px, 10vw, 140px)' }}>
-        <Shell>
-          <div className="grid" style={{ alignItems: 'end', minHeight: '78vh' }}>
-            {/* Headline left */}
-            <div style={{ gridColumn: '1 / span 7', paddingBottom: 24 }}>
-              <Reveal>
-                <Eyebrow red style={{ marginBottom: 40 }}>Washington, DC · Public-sector A+E · Est. 2015</Eyebrow>
-              </Reveal>
-              <Reveal delay={100}>
-                <h1 className="display display-xl" style={{ marginBottom: 48 }}>
-                  We <span className="u">design</span>, <span className="u">engineer</span>,<br/>
-                  and <span className="u">steward</span> buildings<br/>
-                  that serve the&nbsp;<em>public good</em>.
-                </h1>
-              </Reveal>
-              <Reveal delay={250}>
-                <div style={{ display: 'flex', gap: 40, flexWrap: 'wrap', alignItems: 'baseline', marginTop: 24 }}>
-                  <TextLink to="/projects">See our work</TextLink>
-                </div>
-              </Reveal>
-            </div>
+      <HeroCarousel ids={heroIds} />
 
-            {/* Image right */}
-            <div style={{ gridColumn: '8 / span 5', alignSelf: 'stretch', display: 'flex' }}>
-              <Reveal style={{ width: '100%', display: 'flex' }}>
-                <div style={{ width: '100%', alignSelf: 'end' }}>
-                  <PhotoWell
-                    id="home-hero"
-                    placeholder="Thurgood Marshall Center — façade, autumn light"
-                    src="assets/home/hero.jpg"
-                    ratio="3/4"
-                  />
-                </div>
-              </Reveal>
-            </div>
+      {/* Statement block — headline left, founding paragraph right */}
+      <Section data-screen-label="Home/Statement">
+        <Rule />
+        <div className="grid" style={{ alignItems: 'start', paddingTop: 'clamp(72px, 9vw, 120px)' }}>
+          <div style={{ gridColumn: '1 / span 6' }}>
+            <Reveal>
+              <h1 className="display display-l">
+                Meaningful, <span style={{ color: 'var(--duro-red)', fontStyle: 'italic' }}>inspired</span> design solutions for all.
+              </h1>
+            </Reveal>
           </div>
-        </Shell>
-      </section>
-
-      {/* SELECTED WORK — light zone, the work breathes against off-white */}
-      <section className="section-light" data-screen-label="Home/Work" style={{ paddingTop: 'clamp(80px, 10vw, 120px)', paddingBottom: 'clamp(120px, 14vw, 200px)' }}>
-        <Shell>
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', marginBottom: 64 }}>
-            <Eyebrow>Selected Work · 2023 — 2025</Eyebrow>
-            <TextLink to="/projects" ghost>All projects</TextLink>
-          </div>
-        </Shell>
-
-        {/* Lead — Thurgood Marshall — full bleed */}
-        <Reveal>
-          <div style={{ padding: '0 var(--page-pad)', maxWidth: 1440, margin: '0 auto' }}>
-            <FeaturedProject id="thurgood-marshall" />
-          </div>
-        </Reveal>
-
-        {/* 2-up gallery */}
-        <Shell style={{ paddingTop: 160, paddingBottom: 0 }}>
-          <div className="grid" style={{ rowGap: 120 }}>
-            <div style={{ gridColumn: '1 / span 6' }}>
-              <Reveal><ProjectCard {...PROJECTS[1]} ratio="4/5" /></Reveal>
-            </div>
-            <div style={{ gridColumn: '7 / span 6', marginTop: 80 }}>
-              <Reveal delay={120}><ProjectCard {...PROJECTS[2]} ratio="4/5" /></Reveal>
-            </div>
-            <div style={{ gridColumn: '2 / span 5' }}>
-              <Reveal><ProjectCard {...PROJECTS[3]} ratio="3/4" /></Reveal>
-            </div>
-            <div style={{ gridColumn: '8 / span 5', marginTop: 120 }}>
-              <Reveal delay={120}><ProjectCard {...PROJECTS[4]} ratio="3/4" /></Reveal>
-            </div>
-          </div>
-        </Shell>
-      </section>
-
-      {/* WHY INTEGRATED — single pull-quote, no body copy */}
-      <Section data-screen-label="Home/Integrated">
-        <div className="grid">
-          <div style={{ gridColumn: '2 / span 10' }}>
-            <Eyebrow style={{ marginBottom: 40 }}>The Integrated Firm</Eyebrow>
-            <PullQuote>
-              "One signature on every drawing.<br/>
-              One team accountable for every decision."
-            </PullQuote>
+          <div style={{ gridColumn: '8 / span 5' }}>
+            <Reveal delay={120}>
+              <p className="body-l" style={{ lineHeight: 1.65 }}>
+                Duro Design Group was founded to deliver rigorous, inspired design
+                across scales — from everyday private spaces to civic and public
+                environments. Our work is responsive to the client, the end user,
+                and the broader community, creating places that are visually
+                engaging, technically resolved, and responsible to their context,
+                resources, and long-term use. We offer architecture, engineering,
+                urban design, permitting, and construction support through a
+                collaborative process centered on people.
+              </p>
+              <div style={{ marginTop: 40 }}>
+                <TextLink to="/work">See our work</TextLink>
+              </div>
+            </Reveal>
           </div>
         </div>
       </Section>
-
-      {/* PRACTICE AREAS — one-line list, full detail on /services */}
-      <Section sm data-screen-label="Home/Practice">
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', marginBottom: 48 }}>
-          <div>
-            <Eyebrow style={{ marginBottom: 24 }}>Practice Areas</Eyebrow>
-            <h2 className="display display-m" style={{ maxWidth: '18ch' }}>
-              Eleven services.<br/>One contract.
-            </h2>
-          </div>
-          <TextLink to="/services" ghost>Services in detail</TextLink>
-        </div>
-
-        <div className="serif mute" style={{ fontSize: 'clamp(18px, 1.5vw, 22px)', lineHeight: 1.8, maxWidth: '72ch' }}>
-          Architecture · Interior Architecture · Landscape Architecture · MEP Engineering · Structural Engineering · Civil Engineering · Historic Preservation &amp; Adaptive Reuse · Feasibility &amp; Existing Conditions · Construction Administration · Permitting &amp; Regulatory Strategy · Permit Expediting
-        </div>
-      </Section>
-
-      {/* PROCUREMENT READINESS */}
-      <section className="section dark-block" data-screen-label="Home/Procurement">
-        <Shell>
-          <div className="grid" style={{ alignItems: 'start' }}>
-            <div style={{ gridColumn: '1 / span 5' }}>
-              <Eyebrow red style={{ marginBottom: 32 }}>Procurement Readiness</Eyebrow>
-              <h2 className="display display-l" style={{ marginBottom: 48 }}>
-                Built for the way <em><span className="u">public agencies</span></em> buy.
-              </h2>
-              <div>
-                <TextLink to="/contact">Request our SF-330 portfolio</TextLink>
-              </div>
-            </div>
-
-            <div style={{ gridColumn: '7 / span 6' }}>
-              <Rule />
-              {CONTRACTING.registrations.map((r) => (
-                <div key={r} style={{
-                  display: 'grid', gridTemplateColumns: 'auto 1fr',
-                  padding: '20px 0', borderBottom: '1px solid rgba(250,250,247,0.15)',
-                  gap: 24,
-                }}>
-                  <div className="smallcaps" style={{ color: 'var(--duro-red)' }}>✓</div>
-                  <div className="body-m">{r}</div>
-                </div>
-              ))}
-
-              <div style={{ marginTop: 48 }}>
-                <Eyebrow style={{ marginBottom: 24, color: 'rgba(250,250,247,0.6)' }}>NAICS Codes</Eyebrow>
-                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: 16 }}>
-                  {CONTRACTING.naics.map(n => (
-                    <div key={n.code} style={{ paddingTop: 12, borderTop: '1px solid rgba(250,250,247,0.15)' }}>
-                      <div className="serif" style={{ fontSize: 22, color: 'var(--duro-bg)', letterSpacing: '-0.01em' }}>{n.code}</div>
-                      <div className="smallcaps" style={{ color: 'rgba(250,250,247,0.55)', marginTop: 4 }}>{n.label}</div>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            </div>
-          </div>
-        </Shell>
-      </section>
-
-      {/* CLOSING CTA */}
-      <ClosingCTA
-        headline={<><em><span className="u">Building</span></em> for the next generation of public stewards.</>}
-        body={<>DURO Design Group, LLC<br/>5112 11th Street NE<br/>Washington, DC 20011</>}
-      />
     </main>
   );
 }
 
 // ═══════════ ABOUT ═══════════
+// Per client comp: "About" title top-right, then numbered sections —
+// 01 What we bring / 02 Public Sector / 03 Who we are — each a bold heading
+// plus body paragraphs.
 function AboutPage() {
+  const para = (
+    <>
+      <p className="body-m" style={{ marginBottom: 24 }}>
+        At Duro Design Group, how we translate intention into built reality shapes
+        everything we do. We believe good design begins long before a drawing is
+        produced — through listening, observation, and the discipline to understand
+        what a project is asking from every side: the client, the end user, the
+        community, the site, the budget, the agencies, and the people who will live
+        with the outcome. Our practice is rooted in presence, clarity, and care. We
+        show up to each project with curiosity and responsibility, because every
+        space carries more than a program. It carries history, need, ambition,
+        memory, and future use.
+      </p>
+      <p className="body-m" style={{ marginBottom: 24 }}>
+        We see design as both a creative and civic act. Whether we are shaping a
+        home, a cultural place, a workplace, a public park, or a civic environment,
+        our work is measured by how well it serves people. We begin by listening
+        deeply and without assumption, then uncover the opportunities hidden inside
+        constraint. Context, code, systems, accessibility, durability, and craft are
+        not obstacles to beauty; they are the conditions through which meaningful
+        design becomes real. Our role is to bring vision and rigor into the same
+        process — creating spaces that feel inspired, elegant, useful, and enduring.
+      </p>
+      <p className="body-m">
+        Duro was founded to bring institutional-level design care back to everyday
+        life. The discipline often reserved for public work — clear communication,
+        technical precision, agency fluency, documentation, and accountability —
+        belongs in homes, small businesses, cultural spaces, civic projects, and the
+        public realm. We pair architectural imagination with engineering discipline
+        and collaborative delivery so clients of all kinds can access serious design
+        without losing warmth, humanity, or trust. This is how we show up: attentive,
+        exacting, collaborative, and grounded in purpose. We design to elevate the
+        built environment, create belonging, and shape places that honor both what
+        exists and what could be.
+      </p>
+    </>
+  );
+
+  const sections = [
+    { n: '01', t: 'What we bring' },
+    { n: '02', t: 'Public Sector' },
+    { n: '03', t: 'Who we are' },
+  ];
+
   return (
     <main data-screen-label="02 About">
-      <Section sm>
-        <Eyebrow red>About</Eyebrow>
-      </Section>
-
-      <section style={{ paddingBottom: 'clamp(80px, 10vw, 160px)' }}>
-        <Shell>
-          <div className="grid" style={{ alignItems: 'end' }}>
-            <div style={{ gridColumn: '1 / span 7' }}>
-              <Reveal>
-                <h1 className="display display-xl" style={{ marginBottom: 48 }}>
-                  We work where <em><span className="u">public memory</span></em><br/>meets public infrastructure.
-                </h1>
-              </Reveal>
-            </div>
-            <div style={{ gridColumn: '9 / span 4' }}>
-              <Reveal>
-                <PhotoWell
-                  id="about-hero"
-                  placeholder="DURO Design Group logo"
-                  src="assets/brand/duro-logo-red.png"
-                  fit="contain"
-                  ratio="3/4"
-                />
-              </Reveal>
-            </div>
-          </div>
+      <Section sm className="page-title-row">
+        <Shell style={{ padding: 0 }}>
+          <h1 className="page-title">About</h1>
         </Shell>
-      </section>
-
-      {/* The firm — one editorial line */}
-      <Section>
-        <div className="grid">
-          <div style={{ gridColumn: '1 / span 4' }}>
-            <Eyebrow>The Firm</Eyebrow>
-          </div>
-          <div style={{ gridColumn: '5 / span 7' }}>
-            <p className="display display-s" style={{ fontFamily: 'var(--font-serif)' }}>
-              A full-service architecture and engineering firm working across the DMV — anchored in <em>historic preservation</em> and <em>adaptive reuse.</em>
-            </p>
-          </div>
-        </div>
       </Section>
 
-      {/* Approach pillars */}
-      <Section sm data-screen-label="About/Approach">
-        <Rule />
-        <div style={{ paddingTop: 80 }}>
-          <Eyebrow style={{ marginBottom: 64 }}>Approach</Eyebrow>
-          <div className="grid" style={{ rowGap: 88 }}>
-            {[
-              { n: '01', t: 'Integrated by design', d: 'Five disciplines, one accountable team. In-house, not subconsulted.' },
-              { n: '02', t: 'Stewards of historic fabric', d: 'Buildings older than living memory, treated as artifacts first.' },
-              { n: '03', t: 'Resilient and net-zero ready', d: 'BEPS, LEED, and net-zero pathways baked into scope — not retrofitted later.' },
-              { n: '04', t: 'Accountable to the public', d: 'Calibrated to the procurement cycle, the review process, and the people who pay for it.' },
-            ].map((p, i) => (
-              <div key={p.n} style={{ gridColumn: (i % 2 === 0) ? '1 / span 5' : '7 / span 5' }}>
-                <Reveal delay={i * 80}>
-                  <div className="display display-l" style={{ color: 'var(--duro-red)', fontWeight: 300, marginBottom: 24, fontSize: 'clamp(72px, 8vw, 112px)' }}>{p.n}</div>
-                  <h3 className="display display-s" style={{ marginBottom: 16 }}>{p.t}</h3>
-                  <p className="body-m mute" style={{ maxWidth: '40ch' }}>{p.d}</p>
-                </Reveal>
-              </div>
-            ))}
-          </div>
-        </div>
-      </Section>
-
-      {/* Leadership / credentials */}
-      <Section sm data-screen-label="About/Credentials">
-        <Rule />
-        <div className="grid" style={{ padding: '80px 0' }}>
-          <div style={{ gridColumn: '1 / span 4' }}>
-            <Eyebrow style={{ marginBottom: 24 }}>Leadership</Eyebrow>
-            <p className="body-m mute">Leadership profiles coming soon.</p>
-          </div>
-          <div style={{ gridColumn: '6 / span 7' }}>
-            <Eyebrow style={{ marginBottom: 32 }}>Credentials</Eyebrow>
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 32 }}>
-              {['AIA', 'NCARB', 'PE', 'LEED AP', 'AIA|DC Member', 'SAM.gov'].map(c => (
-                <div key={c} style={{ paddingTop: 16, borderTop: '1px solid var(--duro-rule)' }}>
-                  <div className="serif" style={{ fontSize: 28, letterSpacing: '-0.01em' }}>{c}</div>
-                </div>
-              ))}
-            </div>
-          </div>
-        </div>
-        <Rule />
-      </Section>
-
-      {/* Awards strip */}
-      <Section data-screen-label="About/Awards">
-        <Eyebrow style={{ marginBottom: 56 }}>Recognition</Eyebrow>
-        {[
-          { y: '2024', n: 'Urban Land Institute Wavemaker Award', p: 'Justice Thurgood Marshall Center' },
-          { y: '2024', n: 'Historic Preservation Review — Approved with Distinction', p: 'Eastern Market Preservation' },
-          { y: '2023', n: 'DGS Contractor of the Year — Finalist', p: 'Department of General Services' },
-          { y: '2023', n: 'AIA|DC Civic Design — Recognition', p: 'Walter Pierce Park Upgrades' },
-        ].map((a, i) => (
-          <Reveal key={i} delay={i * 60}>
-            <div className="award-row">
-              <div className="award-year">{a.y}</div>
-              <div className="award-name">{a.n}</div>
-              <div className="award-project">{a.p}</div>
-            </div>
+      <Section sm style={{ paddingTop: 'clamp(24px, 4vw, 56px)' }} data-screen-label="About/Sections">
+        {sections.map((s, i) => (
+          <Reveal key={s.n} delay={i * 60}>
+            <Accordion num={`${s.n} —`} title={s.t} defaultOpen={i === 0}>
+              <div style={{ color: 'var(--duro-ink)' }}>{para}</div>
+            </Accordion>
           </Reveal>
         ))}
       </Section>
-
-      <ClosingCTA
-        headline={<>Bring us a <em><span className="u">difficult</span></em> public project.</>}
-        body={<>hello@durodesigngroup.com<br/>(202) 491-4948</>}
-      />
     </main>
   );
 }
 
+// ServiceItem — discipline name + tagline stay visible; the description and
+// "Selected capabilities" list drop down behind a labeled toggle.
+function ServiceItem({ service: s, defaultOpen = false }) {
+  const [open, setOpen] = useStateP(defaultOpen);
+  return (
+    <div style={{ marginBottom: 'clamp(40px, 5vw, 64px)' }}>
+      <h2 style={{ fontFamily: 'var(--font-sans)', fontWeight: 700, fontSize: 'clamp(26px, 3vw, 38px)', letterSpacing: '-0.02em', marginBottom: 16 }}>{s.name}</h2>
+      <p className="body-m" style={{ marginBottom: 18 }}>{s.tag}</p>
+
+      {/* Toggle — clearly indicates a dropdown with a rotating chevron */}
+      <button
+        onClick={() => setOpen(o => !o)}
+        aria-expanded={open}
+        className="svc-toggle"
+        style={{
+          appearance: 'none', background: 'transparent', border: 0, cursor: 'pointer',
+          display: 'inline-flex', alignItems: 'center', gap: 10, padding: '6px 0',
+          fontFamily: 'var(--font-sans)', fontSize: 12, fontWeight: 500,
+          letterSpacing: '0.14em', textTransform: 'uppercase',
+          color: open ? 'var(--duro-red)' : 'var(--duro-ink)',
+        }}
+      >
+        <span>Selected capabilities</span>
+        <span aria-hidden="true" style={{
+          display: 'inline-block', transition: 'transform 300ms cubic-bezier(0.2,0.7,0.2,1)',
+          transform: open ? 'rotate(180deg)' : 'none', fontSize: 11, color: 'var(--duro-red)',
+        }}>▾</span>
+      </button>
+
+      <div className={`acc-body ${open ? '' : ''}`} style={{
+        overflow: 'hidden',
+        maxHeight: open ? 800 : 0,
+        opacity: open ? 1 : 0,
+        transition: 'max-height 420ms cubic-bezier(0.2,0.7,0.2,1), opacity 320ms ease',
+      }}>
+        <p className="body-s mute" style={{ margin: '14px 0 20px', maxWidth: '46ch' }}>{s.body}</p>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
+          {s.caps.map(c => (
+            <div key={c} className="body-s mute" style={{ display: 'flex', alignItems: 'baseline', gap: 8 }}>
+              <span style={{ color: 'var(--duro-red)' }}>·</span> {c}
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}
+
 // ═══════════ SERVICES ═══════════
+// Per client comp: "Services" title top-right; left column lists Architecture /
+// Engineering / Permitting (name · tagline · capabilities dropdown);
+// right column holds a large serif statement with red emphasis words.
 function ServicesPage() {
   const services = [
     {
-      n: '01', name: 'Architecture',
-      photo: 'Walter Pierce Park — pavilion',
-      body: 'Programming through construction administration. Calibrated to how public agencies procure.',
-      bullets: ['Programming & feasibility', 'Schematic design', 'Design development', 'Construction documents', 'Construction administration', 'Cost-estimating coordination', 'Stakeholder engagement'],
+      name: 'Architecture',
+      tag: 'Spaces shaped around people, purpose, and place.',
+      body: 'We design buildings, interiors, renovations, additions, and spatial experiences that support how people live, work, gather, and move. Our architectural work balances clarity, beauty, technical coordination, and long-term use.',
+      caps: ['Feasibility Studies and Existing Conditions Assessments', 'Space Planning and Programming', 'Interior Architecture', 'Landscape Architecture', 'Full Service Permitting Services', 'Construction Administration'],
     },
     {
-      n: '02', name: 'Interior Architecture',
-      photo: 'Interior — civic finishes detail',
-      body: 'Civic-space interiors and adaptive reuse — coordinated with MEP and structural in-house.',
-      bullets: ['Space planning & programming', 'Furniture, fixtures, equipment (FF&E)', 'Finishes & materials selection', 'Signage & wayfinding', 'Acoustic & lighting planning'],
+      name: 'Engineering',
+      tag: 'Technical care that makes spaces safer, stronger, and more enduring.',
+      body: 'We coordinate the systems that allow design to perform. MEP, structure, and civil are integrated early so each project can move with confidence from idea to use.',
+      caps: ['MEP Engineering', 'Structural Engineering', 'Civil Engineering'],
     },
     {
-      n: '03', name: 'Landscape Architecture',
-      photo: 'Walter Pierce Park — site plan',
-      body: 'Plazas, parks, and streetscapes — designed as one with our civil team.',
-      bullets: ['Site design & site planning', 'Park & plaza design', 'Streetscape & public-realm', 'Planting design', 'ADA & path-of-travel'],
-    },
-    {
-      n: '04', name: 'MEP Engineering',
-      photo: 'Mechanical room — equipment as architecture',
-      body: 'Mechanical, electrical, plumbing — in-house, twenty feet from our architects.',
-      bullets: ['Mechanical system design', 'Electrical & lighting design', 'Plumbing system design', 'Fire protection coordination', 'Load calculations & system analysis', 'Energy modeling & BEPS', 'LEED / net-zero pathways'],
-    },
-    {
-      n: '05', name: 'Structural Engineering',
-      photo: 'Historic structure — load survey',
-      body: 'From light-gauge framing through heavy timber. Specializing in historic structure assessments.',
-      bullets: ['Structural system design', 'Structural analysis & calculations', 'Existing building assessments', 'Renovation & retrofit design', 'Heavy timber, steel, light gauge'],
-    },
-    {
-      n: '06', name: 'Civil Engineering & Site Design',
-      photo: 'Site plan — stormwater + grading',
-      body: 'Stormwater, GAR, grading, utilities. Coordinated with landscape and DDOT.',
-      bullets: ['Erosion & sediment control plans', 'Stormwater management plans', 'Green Area Ratio (GAR) plans', 'Utility plans', 'Traffic control & public-space plans'],
-    },
-    {
-      n: '07', name: 'Historic Preservation & Adaptive Reuse',
-      photo: 'Eastern Market — stonework detail',
-      body: 'HPRB, SHPO, CFA, Section 106. Grounded in the Secretary of the Interior\'s Standards.',
-      bullets: ['HPRB / SHPO / CFA review', 'Section 106 consultation', 'Conditions assessments', 'Treatment plans & specifications', 'Historic structure reports', 'Adaptive reuse planning'],
-    },
-    {
-      n: '08', name: 'Feasibility & Existing Conditions',
-      photo: 'Field survey — assessment in progress',
-      body: 'Conditions documentation, capacity surveys, and feasibility memos before scope commitments.',
-      bullets: ['Feasibility studies', 'Existing conditions assessments', 'Pre-design memos', 'Budget & schedule validation', 'Test fits & space studies'],
-    },
-    {
-      n: '09', name: 'Construction Administration',
-      photo: 'Site visit — punch list',
-      body: 'The same team that designed it gets it built. CA as a deliverable, not a courtesy.',
-      bullets: ['Field observation & reporting', 'RFI & submittal management', 'Change-order review', 'Pay application review', 'Punch-list & substantial completion'],
-    },
-    {
-      n: '10', name: 'Permitting & Regulatory Strategy',
-      photo: 'Permit set — review markup',
-      body: 'DC, Maryland, Virginia. DCRA, MDE, VDOT, HPRB, DDOT, DC Water — handled in-house.',
-      bullets: ['Building permits', 'Stormwater, utility, tree permits', 'Department of Transportation permits', 'DC Water service permits', 'HPRB / CFA submissions', 'Agency liaison'],
-    },
-    {
-      n: '11', name: 'Permit Expediting',
-      photo: 'Plan-review counter',
-      body: 'The team that drew the documents walks them through plan review. No referrals.',
-      bullets: ['Plan-review accompaniment', 'Comment-response coordination', 'Multi-agency walk-through', 'Revision package preparation'],
+      name: 'Permitting',
+      tag: 'Government-caliber guidance for projects of every scale.',
+      body: 'We help projects move through review, permitting, and agency coordination with clarity. Whether the project is public or private, we bring discipline to the approval process so design intent can move forward.',
+      caps: ['Building Permits', 'Stormwater, Utility, and Tree Permits', 'Department of Transportation Permits', 'Permit Expediting'],
     },
   ];
 
   return (
     <main data-screen-label="03 Services">
-      {/* Hero */}
-      <section className="section-sm" style={{ paddingTop: 'clamp(40px, 6vw, 80px)' }}>
-        <Shell>
-          <Eyebrow red style={{ marginBottom: 40 }}>Services · Capabilities Statement</Eyebrow>
-          <div className="grid">
-            <div style={{ gridColumn: '1 / span 9' }}>
-              <Reveal>
-                <h1 className="display display-xl" style={{ marginBottom: 48 }}>
-                  Eleven services.<br/>One roof.<br/>One <em><span className="u">accountable</span></em> team.
-                </h1>
-              </Reveal>
-            </div>
-          </div>
+      <Section sm className="page-title-row">
+        <Shell style={{ padding: 0 }}>
+          <h1 className="page-title">Services</h1>
         </Shell>
-      </section>
-
-      {/* Featured offering — Preservation Pre-Screen */}
-      <Section sm>
-        <Reveal>
-          <div style={{ border: '1px solid var(--duro-rule)', padding: 'clamp(40px, 6vw, 80px)' }}>
-            <div className="grid" style={{ alignItems: 'end' }}>
-              <div style={{ gridColumn: '1 / span 7' }}>
-                <Eyebrow red style={{ marginBottom: 32 }}>Featured · Fixed-Fee</Eyebrow>
-                <h3 className="display display-m" style={{ marginBottom: 24, maxWidth: '14ch' }}>
-                  The Preservation Pre-Screen.
-                </h3>
-                <p className="body-l mute" style={{ maxWidth: '46ch' }}>
-                  Two weeks, one fixed fee — a complete HPRB / SHPO / CFA pre-submission package with a written go / no-go recommendation.
-                </p>
-              </div>
-              <div style={{ gridColumn: '9 / span 4' }}>
-                <div style={{ marginBottom: 32 }}>
-                  <div className="serif" style={{ fontSize: 80, lineHeight: 0.9, letterSpacing: '-0.04em' }}>2</div>
-                  <div className="smallcaps mute" style={{ marginTop: 8 }}>Weeks · Fixed fee</div>
-                </div>
-                <TextLink to="/contact">Request a pre-screen</TextLink>
-              </div>
-            </div>
-          </div>
-        </Reveal>
       </Section>
 
-      {/* Disciplines */}
-      {services.map((s, i) => (
-        <section key={s.n} className="section-sm" style={{ paddingTop: 0 }} data-screen-label={`Services/${s.name}`}>
-          <Shell>
-            <Rule />
-            <div className="grid" style={{ paddingTop: 80, paddingBottom: 24, alignItems: 'start' }}>
-              <div style={{ gridColumn: '1 / span 1' }}>
-                <div className="serif" style={{ fontSize: 56, lineHeight: 0.9, color: 'var(--duro-red)' }}>{s.n}</div>
-              </div>
-              <div style={{ gridColumn: '2 / span 5' }}>
-                <Reveal>
-                  <h2 className="display display-m" style={{ marginBottom: 32, maxWidth: '14ch' }}>{s.name}</h2>
-                  <p className="body-l" style={{ marginBottom: 32 }}>{s.body}</p>
-                  <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px 24px' }}>
-                    {s.bullets.map(b => (
-                      <span key={b} className="smallcaps mute" style={{ display: 'inline-flex', alignItems: 'baseline', gap: 6 }}>
-                        <span style={{ color: 'var(--duro-red)' }}>·</span> {b}
-                      </span>
-                    ))}
-                  </div>
-                </Reveal>
-              </div>
-              <div style={{ gridColumn: '8 / span 5' }}>
-                <Reveal>
-                  <PhotoWell
-                    id={`svc-${s.n}`}
-                    placeholder={s.photo}
-                    ratio="4/5"
-                  />
-                </Reveal>
-              </div>
-            </div>
-          </Shell>
-        </section>
-      ))}
-
-      {/* Sectors */}
-      <Section data-screen-label="Services/Sectors">
-        <Rule />
-        <div style={{ padding: '64px 0' }}>
-          <div style={{ display: 'flex', flexWrap: 'wrap', gap: '24px 64px', alignItems: 'baseline', justifyContent: 'space-between', marginBottom: 48 }}>
-            <Eyebrow>Sectors Served</Eyebrow>
-            <div style={{ display: 'flex', flexWrap: 'wrap', gap: '12px 32px' }}>
-              {['Federal', 'State', 'Municipal', 'Cultural Institutions', 'Educational', 'Civic', 'Mission-Driven Private'].map(s => (
-                <span key={s} className="serif" style={{ fontSize: 'clamp(20px, 2vw, 26px)', letterSpacing: '-0.01em' }}>{s}</span>
-              ))}
-            </div>
-          </div>
-          <Rule />
-          <div style={{ paddingTop: 40, display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: 32 }}>
-            <div>
-              <Eyebrow style={{ marginBottom: 16 }}>Procurement</Eyebrow>
-              <p className="body-m">SAM.gov-registered. AIA|DC member. DSLBD CBE — verification in progress. NAICS codes 541310 · 541330 · 541320 · 541350 · 541410. UEI, CAGE Code, and SF-330 portfolio available on request.</p>
-            </div>
-            <div>
-              <Eyebrow style={{ marginBottom: 16 }}>Geography</Eyebrow>
-              <p className="body-m">Washington, DC · Maryland · Virginia. Permitting active across DCRA, DOB, CFA, DDOT, DC Water, MDE, and VDOT. Studio at 5112 11th Street NE, Washington, DC 20011.</p>
-            </div>
-          </div>
-        </div>
-        <Rule />
-      </Section>
-
-      <ClosingCTA
-        headline={<>Bring us the project nobody else will <em><span className="u">sign</span></em>.</>}
-        body={<>hello@durodesigngroup.com<br/>(202) 491-4948</>}
-      />
-    </main>
-  );
-}
-
-// ═══════════ PROJECTS INDEX ═══════════
-// Drummond-style filterable grid: image-first cards, 4:3 landscape, minimal
-// per-card text (title · location · meta line). Full project context lives
-// behind "VIEW PROJECT →" via the overlay.
-function ProjectsPage() {
-  const { open } = useProjectOverlay();
-  const [filter, setFilter] = useStateP('All');
-
-  const filtered = filter === 'All'
-    ? PROJECTS
-    : PROJECTS.filter(p => (p.categories || []).includes(filter));
-
-  return (
-    <main data-screen-label="04 Projects">
-      <section className="section-sm" style={{ paddingTop: 'clamp(40px, 6vw, 80px)' }}>
-        <Shell>
-          <Eyebrow red style={{ marginBottom: 40 }}>Projects · Selected</Eyebrow>
-          <Reveal>
-            <h1 className="display display-xl" style={{ marginBottom: 48 }}>
-              Buildings that carry<br/>a <em><span className="u">civic weight</span></em>.
-            </h1>
-          </Reveal>
-        </Shell>
-      </section>
-
-      {/* Filter pills — light zone start */}
-      <section className="section-light" style={{ paddingTop: 'clamp(40px, 5vw, 64px)', paddingBottom: 'clamp(40px, 5vw, 64px)' }}>
-        <Shell>
-          <div style={{
-            display: 'flex',
-            gap: 'clamp(24px, 3vw, 40px)',
-            flexWrap: 'wrap',
-            alignItems: 'baseline',
-            paddingTop: 32,
-            paddingBottom: 32,
-            borderTop: '1px solid var(--duro-rule)',
-            borderBottom: '1px solid var(--duro-rule)',
-          }}>
-            {PROJECT_CATEGORIES.map(cat => {
-              const isActive = filter === cat;
-              const count = cat === 'All'
-                ? PROJECTS.length
-                : PROJECTS.filter(p => (p.categories || []).includes(cat)).length;
-              return (
-                <button
-                  key={cat}
-                  onClick={() => setFilter(cat)}
-                  className="pj-filter"
-                  style={{
-                    appearance: 'none',
-                    border: 0,
-                    background: 'transparent',
-                    padding: '4px 0',
-                    cursor: 'pointer',
-                    fontFamily: 'var(--font-sans)',
-                    fontSize: 13,
-                    letterSpacing: '0.14em',
-                    textTransform: 'uppercase',
-                    color: isActive ? 'var(--duro-ink)' : 'var(--duro-mute)',
-                    borderBottom: isActive ? '1px solid var(--duro-red)' : '1px solid transparent',
-                    transition: 'color 200ms ease, border-color 200ms ease',
-                  }}
-                >
-                  {cat} <span style={{ color: 'var(--duro-mute)', marginLeft: 6, fontSize: 11 }}>{count}</span>
-                </button>
-              );
-            })}
-          </div>
-        </Shell>
-      </section>
-
-      {/* Grid of project cards — 2-column on desktop, 1-column on mobile */}
-      <section className="section-light" style={{ paddingBottom: 'clamp(120px, 14vw, 200px)' }}>
-        <Shell>
-          <div className="pj-grid">
-            {filtered.map((p) => (
-              <Reveal key={p.id}>
-                <article
-                  className="pj-card"
-                  onClick={() => open(p.id)}
-                  data-cursor="view"
-                  data-cursor-label="View case"
-                  style={{ cursor: 'pointer' }}
-                  data-screen-label={`Projects/${p.title}`}
-                >
-                  <MediaWell
-                    id={`pj-${p.id}`}
-                    placeholder={`${p.title} — primary photo or video`}
-                    src={PROJECT_IMAGES[p.id]?.hero}
-                    videoSrc={PROJECT_VIDEOS[p.id]?.hero}
-                    ratio="4/3"
-                  />
-                  <div className="pj-card-meta">
-                    <h2 className="pj-card-title">
-                      <span className="project-title">{p.title}</span>
-                    </h2>
-                    <div className="pj-card-loc">
-                      <span aria-hidden="true" style={{ marginRight: 6 }}>↳</span>{p.location}
-                    </div>
-                    <div className="pj-card-stats">
-                      {p.year} · {p.types.split(' · ')[0]} · {p.sf}
-                    </div>
-                  </div>
-                </article>
+      <Section sm style={{ paddingTop: 'clamp(24px, 4vw, 56px)' }}>
+        <div className="grid" style={{ alignItems: 'start', columnGap: 'clamp(40px, 6vw, 96px)' }}>
+          {/* Left — disciplines (capabilities collapse under each tagline) */}
+          <div style={{ gridColumn: '1 / span 6' }}>
+            {services.map((s, i) => (
+              <Reveal key={s.name} delay={i * 80}>
+                <ServiceItem service={s} defaultOpen={i === 0} />
               </Reveal>
             ))}
           </div>
 
-          {filtered.length === 0 && (
-            <div style={{ padding: '80px 0', textAlign: 'center', color: 'var(--duro-mute)' }} className="smallcaps">
-              No projects in this category yet.
-            </div>
-          )}
-        </Shell>
-      </section>
-
-      {/* Archive prompt */}
-      <Section sm>
-        <Rule />
-        <div style={{ padding: '64px 0' }} className="grid">
-          <div style={{ gridColumn: '1 / span 7' }}>
-            <h3 className="display display-s" style={{ marginBottom: 16 }}>More projects in the archive.</h3>
-            <p className="body-m mute" style={{ maxWidth: '40ch' }}>For federal procurement officers and prime contractors — request our full SF-330 portfolio.</p>
-          </div>
-          <div style={{ gridColumn: '9 / span 4', alignSelf: 'end' }}>
-            <TextLink to="/contact">Request portfolio</TextLink>
+          {/* Right — big serif statement */}
+          <div style={{ gridColumn: '8 / span 5' }}>
+            <Reveal delay={120}>
+              <p className="display display-m" style={{ lineHeight: 1.12 }}>
+                From first <span style={{ color: 'var(--duro-red)' }}>intention</span> to final detail, we guide ideas into elegant, enduring places shaped for people and <span style={{ color: 'var(--duro-red)' }}>built</span> with discipline.
+              </p>
+            </Reveal>
           </div>
         </div>
-        <Rule />
+      </Section>
+    </main>
+  );
+}
+
+// ═══════════ WORK ═══════════
+// Per client comp: "Work" title top-right; a thumbnail grid of every project;
+// then a featured block (big media left, 3 stacked thumbs right) with a
+// Completion | Type | SQ FT meta line and a descriptive paragraph. Selecting
+// any thumbnail promotes it to the featured slot; clicking the feature opens
+// the full overlay.
+function WorkPage() {
+  const { open } = useProjectOverlay();
+  const [featuredId, setFeatured] = useStateP(PROJECTS[0].id);
+  const feat = PROJECT_BY_ID[featuredId];
+  const imgs = PROJECT_IMAGES[featuredId] || {};
+
+  // The three side thumbs are OTHER VIEWS OF THE SAME PROJECT (its own
+  // detail / context / card / archival shots), not other projects. Pick up to
+  // three distinct stills, falling back to whatever the project has.
+  const sideViews = [imgs.detail, imgs.context, imgs.card, imgs.archival, imgs.hero]
+    .filter(Boolean)
+    .filter((v, i, a) => a.indexOf(v) === i)
+    .slice(0, 3);
+
+  const featuredHere = (id) => { setFeatured(id); };
+
+  return (
+    <main data-screen-label="04 Work">
+      <Section sm className="page-title-row">
+        <Shell style={{ padding: 0 }}>
+          <h1 className="page-title">Work</h1>
+        </Shell>
       </Section>
 
-      <ClosingCTA
-        headline={<><em><span className="u">Public</span></em> work, made permanent.</>}
-        body={<>5112 11th Street NE<br/>Washington, DC 20011</>}
-      />
+      {/* Thumbnail grid — every project; hover plays video, click features it */}
+      <Section sm style={{ paddingTop: 'clamp(16px, 3vw, 40px)', paddingBottom: 'clamp(32px, 4vw, 56px)' }}>
+        <div className="work-wrap work-thumbs">
+          {PROJECTS.map((p) => (
+            <Reveal key={p.id}>
+              <div
+                className="work-thumb"
+                onClick={() => { setFeatured(p.id); window.scrollTo({ top: window.scrollY }); }}
+                onDoubleClick={() => open(p.id)}
+                data-cursor="view" data-cursor-label="Select"
+                data-screen-label={`Work/${p.title}`}
+              >
+                <MediaWell
+                  id={`wt-${p.id}`}
+                  placeholder={`${p.title}`}
+                  src={PROJECT_IMAGES[p.id]?.card || PROJECT_IMAGES[p.id]?.hero}
+                  videoSrc={PROJECT_VIDEOS[p.id]?.hero}
+                  ratio={null}
+                />
+                <div className="work-thumb-label">{p.title}</div>
+              </div>
+            </Reveal>
+          ))}
+        </div>
+      </Section>
+
+      {/* Featured block */}
+      <Section sm style={{ paddingTop: 0, paddingBottom: 'clamp(56px, 7vw, 96px)' }} data-screen-label="Work/Featured">
+        <Reveal>
+          {/* Big media LEFT · same-project view thumbs RIGHT */}
+          <div className="work-wrap work-feature">
+            <div
+              className="work-feature-main"
+              onClick={() => open(featuredId)}
+              data-cursor="view" data-cursor-label="View"
+            >
+              <MediaWell
+                id={`wf-main-${featuredId}`}
+                placeholder={`${feat.title} — primary`}
+                src={PROJECT_IMAGES[featuredId]?.hero}
+                videoSrc={PROJECT_VIDEOS[featuredId]?.hero}
+                ratio={null}
+              />
+              <div className="wf-caption">
+                <div className="wf-title">{feat.title}</div>
+                <div className="wf-loc">{feat.location}</div>
+              </div>
+            </div>
+            <div className="work-feature-side">
+              {sideViews.map((src, i) => (
+                <div
+                  key={src}
+                  className="work-thumb"
+                  onClick={() => open(featuredId)}
+                  data-cursor="view" data-cursor-label="View"
+                >
+                  <PhotoWell
+                    id={`wf-side-${featuredId}-${i}`}
+                    placeholder={`${feat.title} — view ${i + 1}`}
+                    src={src}
+                    ratio={null}
+                  />
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Meta line + paragraph */}
+          <div className="work-wrap" style={{ marginTop: 'clamp(28px, 3vw, 44px)' }}>
+            <div style={{ display: 'flex', flexWrap: 'wrap', gap: 'clamp(24px, 4vw, 56px)', marginBottom: 24 }} className="smallcaps mute">
+              <span>Completion <span style={{ color: 'var(--duro-ink)', marginLeft: 8 }}>{feat.year}</span></span>
+              <span>Type <span style={{ color: 'var(--duro-ink)', marginLeft: 8 }}>{feat.types.split(' · ')[0]}</span></span>
+              <span>SQ FT <span style={{ color: 'var(--duro-ink)', marginLeft: 8 }}>{feat.sf}</span></span>
+            </div>
+            <p className="body-m mute" style={{ maxWidth: '88ch' }}>{feat.blurb}</p>
+            <div style={{ marginTop: 28 }}>
+              <TextLink onClick={() => open(featuredId)}>View project</TextLink>
+            </div>
+          </div>
+        </Reveal>
+      </Section>
     </main>
   );
 }
@@ -852,77 +588,28 @@ function ContactPage() {
 
   return (
     <main data-screen-label="05 Contact">
-      <section className="section-sm" style={{ paddingTop: 'clamp(40px, 6vw, 80px)' }}>
-        <Shell>
-          <Eyebrow red style={{ marginBottom: 40 }}>Contact</Eyebrow>
+      <Section sm className="page-title-row">
+        <Shell style={{ padding: 0 }}>
+          <h1 className="page-title">Contact</h1>
         </Shell>
-      </section>
+      </Section>
 
-      <Section style={{ paddingTop: 0 }}>
+      <Section style={{ paddingTop: 'clamp(24px, 4vw, 56px)' }}>
         <div className="grid" style={{ alignItems: 'start', columnGap: 'clamp(40px, 6vw, 96px)' }}>
-          {/* Left column — editorial */}
-          <div style={{ gridColumn: '1 / span 6' }}>
+          {/* Left — serif statement */}
+          <div style={{ gridColumn: '1 / span 5' }}>
             <Reveal>
-              <h1 className="display display-l" style={{ marginBottom: 48 }}>
-                Tell us about<br/>your <em><span className="u">project</span></em>.
+              <h1 className="display display-l">
+                Let’s discuss the<br/><span style={{ color: 'var(--duro-red)' }}>possibilities</span>.
               </h1>
-              <p className="body-l" style={{ marginBottom: 56, maxWidth: '36ch' }}>
-                We work with public agencies, cultural institutions, and mission-driven private clients across DC, Maryland, and Virginia. New project inquiries, RFP responses, and SF-330 portfolio requests all start the same way — a short note and a 30-minute call.
-              </p>
-              <Rule style={{ margin: '40px 0' }} />
-              <div className="body-m" style={{ lineHeight: 1.9 }}>
-                <div className="serif" style={{ fontSize: 22, marginBottom: 12 }}>DURO Design Group, LLC</div>
-                <div>5112 11th Street NE</div>
-                <div>Washington, DC 20011</div>
-                <div style={{ marginTop: 24 }}>
-                  <span className="mute" style={{ marginRight: 12 }}>t.</span>(202) 491-4948
-                </div>
-                <div>
-                  <span className="mute" style={{ marginRight: 12 }}>e.</span>hello@durodesigngroup.com
-                </div>
-              </div>
-              <Rule style={{ margin: '40px 0' }} />
-
-              {/* Procurement block */}
-              <Eyebrow style={{ marginBottom: 24 }}>Procurement & Contracting</Eyebrow>
-              <div style={{ display: 'grid', gridTemplateColumns: 'auto 1fr', rowGap: 12, columnGap: 24 }}>
-                {[
-                  ['Registration', 'SAM.gov — Active'],
-                  ['Membership', 'AIA|DC'],
-                  ['Certification', 'DSLBD CBE — Verifying'],
-                  ['UEI', 'Available on request'],
-                  ['CAGE Code', 'Available on request'],
-                ].map(([k, v]) => (
-                  <React.Fragment key={k}>
-                    <div className="smallcaps mute">{k}</div>
-                    <div className="body-s">{v}</div>
-                  </React.Fragment>
-                ))}
-              </div>
-
-              <Eyebrow style={{ marginTop: 40, marginBottom: 16 }}>NAICS Codes</Eyebrow>
-              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: 12 }}>
-                {[
-                  ['541310', 'Architectural Services'],
-                  ['541330', 'Engineering Services'],
-                  ['541320', 'Landscape Architecture'],
-                  ['541350', 'Building Inspection'],
-                  ['541410', 'Interior Design'],
-                ].map(([c, l]) => (
-                  <div key={c}>
-                    <div className="serif" style={{ fontSize: 20, letterSpacing: '-0.01em' }}>{c}</div>
-                    <div className="smallcaps mute" style={{ marginTop: 2 }}>{l}</div>
-                  </div>
-                ))}
-              </div>
             </Reveal>
           </div>
 
-          {/* Right column — form */}
-          <div style={{ gridColumn: '8 / span 5' }}>
+          {/* Right — form */}
+          <div style={{ gridColumn: '7 / span 6' }}>
             <Reveal delay={150}>
               {!submitted ? (
-                <form onSubmit={onSubmit} style={{ display: 'flex', flexDirection: 'column', gap: 40 }}>
+                <form onSubmit={onSubmit} style={{ display: 'flex', flexDirection: 'column', gap: 36 }}>
                   <div>
                     <label className="field-label">Name</label>
                     <input type="text" value={form.name} onChange={e => setForm({...form, name: e.target.value})} required />
@@ -932,35 +619,29 @@ function ContactPage() {
                     <input type="email" value={form.email} onChange={e => setForm({...form, email: e.target.value})} required />
                   </div>
                   <div>
-                    <label className="field-label">Agency / Organization</label>
+                    <label className="field-label">Company</label>
                     <input type="text" value={form.org} onChange={e => setForm({...form, org: e.target.value})} />
                   </div>
                   <div>
-                    <label className="field-label">Inquiry type</label>
-                    <select value={form.type} onChange={e => setForm({...form, type: e.target.value})} required>
-                      <option value="">Select one</option>
-                      <option>RFP / SF-330 response</option>
-                      <option>Public agency — direct inquiry</option>
-                      <option>Cultural institution</option>
-                      <option>Educational</option>
-                      <option>Prime contractor — teaming</option>
-                      <option>Private — mission-driven</option>
-                      <option>Other</option>
-                    </select>
+                    <label className="field-label">Project Type</label>
+                    <input type="text" value={form.type} onChange={e => setForm({...form, type: e.target.value})} />
                   </div>
                   <div>
-                    <label className="field-label">Tell us about your project</label>
+                    <label className="field-label">Message</label>
                     <textarea rows="4" value={form.message} onChange={e => setForm({...form, message: e.target.value})}></textarea>
                   </div>
-                  <div style={{ marginTop: 16 }}>
-                    <button type="submit" className="btn-outline">Send inquiry  →</button>
+                  <div style={{ marginTop: 8 }}>
+                    <button type="submit" className="tlink" style={{ border: 0, background: 'transparent', padding: '4px 0', fontSize: 14 }}>
+                      <span>Send Message</span>
+                      <span className="arrow">→</span>
+                    </button>
                   </div>
                 </form>
               ) : (
-                <div style={{ padding: '64px 0' }}>
-                  <Eyebrow red style={{ marginBottom: 32 }}>Received</Eyebrow>
+                <div style={{ padding: '40px 0' }}>
+                  <Eyebrow red style={{ marginBottom: 24 }}>Received</Eyebrow>
                   <p className="display display-s" style={{ maxWidth: '20ch' }}>
-                    Thanks. We'll respond within one business day.
+                    Thanks. We’ll be in touch shortly.
                   </p>
                 </div>
               )}
@@ -973,6 +654,6 @@ function ContactPage() {
 }
 
 Object.assign(window, {
-  HomePage, AboutPage, ServicesPage, ProjectsPage, ContactPage,
+  HomePage, AboutPage, ServicesPage, WorkPage, ContactPage,
   PROJECTS, PROJECT_BY_ID,
 });

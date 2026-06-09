@@ -104,6 +104,31 @@ function TextLink({ to, onClick, children, arrow = true, ghost = false, style })
   );
 }
 
+// ───────── Accordion (collapsible dropdown) ─────────
+// Header shows an optional number + title and a +/− indicator; body expands.
+// `defaultOpen` lets the first item start open.
+function Accordion({ num, title, defaultOpen = false, children }) {
+  const [open, setOpen] = useState(defaultOpen);
+  return (
+    <div className={`acc ${open ? 'open' : ''}`}>
+      <button
+        className="acc-head"
+        aria-expanded={open}
+        onClick={() => setOpen(o => !o)}
+      >
+        <span style={{ display: 'flex', alignItems: 'baseline', flex: '1 1 auto' }}>
+          {num && <span className="acc-num">{num}</span>}
+          <span className="acc-title">{title}</span>
+        </span>
+        <span className="acc-icon" aria-hidden="true"></span>
+      </button>
+      <div className="acc-body">
+        <div className="acc-body-inner">{children}</div>
+      </div>
+    </div>
+  );
+}
+
 // ───────── Stat ─────────
 function StatBlock({ num, caption }) {
   return (
@@ -310,7 +335,7 @@ Object.assign(window, {
   navigate, useRoute,
   Shell, Section, Reveal,
   Eyebrow, Rule, TextLink,
-  StatBlock, PullQuote, DisciplineRow,
+  StatBlock, PullQuote, DisciplineRow, Accordion,
   ProjectCard, EditorialSplit, ClosingCTA,
   ScrollProgress, PhotoWell,
 });

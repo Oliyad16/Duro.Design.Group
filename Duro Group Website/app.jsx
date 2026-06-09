@@ -1,129 +1,111 @@
-// app.jsx — header, footer, router, tweaks panel, mount
+// app.jsx — header, footer, router, loader, tweaks panel, mount
 
 const { useEffect: useEffectA, useState: useStateA } = React;
 
-function Header({ route }) {
-  const [scrolled, setScrolled] = useStateA(false);
-  useEffectA(() => {
-    const fn = () => setScrolled(window.scrollY > 8);
-    window.addEventListener('scroll', fn, { passive: true });
-    fn();
-    return () => window.removeEventListener('scroll', fn);
-  }, []);
+// ───── Wordmark lockup ─────
+function Wordmark({ wordSize, subSize, onClick }) {
+  return (
+    <a href="#/" onClick={(e) => { e.preventDefault(); navigate('/'); if (onClick) onClick(e); }} className="logo">
+      <span className="logo-word" style={wordSize ? { fontSize: wordSize } : null}>DURO</span>
+      <span className="logo-sub" style={subSize ? { fontSize: subSize } : null}>Design Group</span>
+    </a>
+  );
+}
 
+function Header({ route }) {
+  // Order per client comp: SERVICES · WORK · ABOUT · CONTACT
   const links = [
-    { to: '/', label: 'Home' },
-    { to: '/about', label: 'About' },
     { to: '/services', label: 'Services' },
-    { to: '/projects', label: 'Projects' },
+    { to: '/work', label: 'Work' },
+    { to: '/about', label: 'About' },
     { to: '/contact', label: 'Contact' },
   ];
 
   return (
-    <header className={`hdr ${scrolled ? 'scrolled' : ''}`}>
+    <header className="hdr">
       <div className="hdr-inner">
-        <div style={{ display: 'flex', alignItems: 'center' }}>
-          <a href="#/" onClick={(e) => { e.preventDefault(); navigate('/'); }} className="logo">
-            <span className="logo-dot"></span>
-            <span>DURO</span>
-          </a>
-          <span className="logo-sub">Design Group</span>
-        </div>
+        <Wordmark />
         <nav className="nav">
-          {links.slice(1, 4).map(l => (
+          {links.map(l => (
             <a key={l.to} href={`#${l.to}`}
                onClick={(e) => { e.preventDefault(); navigate(l.to); }}
                className={`nav-link ${route === l.to ? 'active' : ''}`}>
               {l.label}
             </a>
           ))}
-          <a href="#/contact" onClick={(e) => { e.preventDefault(); navigate('/contact'); }}
-             className="nav-cta">Get in touch</a>
         </nav>
       </div>
     </header>
   );
 }
 
+// ───── Footer — three-up info strip + giant red wordmark (client comp) ─────
 function Footer() {
   return (
     <footer className="ftr" data-screen-label="Global/Footer">
       <Shell>
-        <div className="grid" style={{ rowGap: 64 }}>
-          {/* Column 1 — wordmark */}
-          <div style={{ gridColumn: '1 / span 4' }}>
-            <a href="#/" onClick={(e) => { e.preventDefault(); navigate('/'); }} className="logo" style={{ fontSize: 28 }}>
-              <span className="logo-dot" style={{ width: 10, height: 10 }}></span>
-              <span>DURO</span>
-            </a>
-            <div className="smallcaps mute" style={{ marginTop: 16 }}>
-              Architecture · Engineering · Preservation
-            </div>
+        <Rule />
+        <div style={{
+          display: 'grid',
+          gridTemplateColumns: '1fr auto 1fr',
+          alignItems: 'center',
+          gap: 32,
+          padding: '48px 0',
+        }} className="ftr-grid">
+          {/* Left — contact */}
+          <div className="body-m" style={{ lineHeight: 1.7 }}>
+            <div><a href="mailto:info@durodesign.group" style={{ color: 'var(--duro-ink)' }}>info@durodesign.group</a></div>
+            <div>202-491-4948</div>
           </div>
 
-          {/* Column 2 — sitemap */}
-          <div style={{ gridColumn: '6 / span 3' }}>
-            <Eyebrow style={{ marginBottom: 24 }}>Sitemap</Eyebrow>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
-              {['/', '/about', '/services', '/projects', '/contact'].map(t => (
-                <a key={t} href={`#${t}`} onClick={e => { e.preventDefault(); navigate(t); }}
-                   style={{ fontSize: 16, color: 'var(--duro-ink)' }}
-                   className="footer-link">
-                  {t === '/' ? 'Home' : t.replace('/', '').replace(/^./, c => c.toUpperCase())}
-                </a>
-              ))}
-            </div>
-          </div>
-
-          {/* Column 3 — contact */}
-          <div style={{ gridColumn: '10 / span 3' }}>
-            <Eyebrow style={{ marginBottom: 24 }}>Studio</Eyebrow>
-            <div className="body-m" style={{ lineHeight: 1.8 }}>
-              <div>5112 11th Street NE</div>
-              <div>Washington, DC 20011</div>
-              <div style={{ marginTop: 12 }}>(202) 491-4948</div>
-              <div>hello@durodesigngroup.com</div>
-            </div>
-          </div>
-        </div>
-
-        {/* Credentials strip */}
-        <div style={{ marginTop: 88, paddingTop: 32, borderTop: '1px solid var(--duro-rule)', display: 'grid', gridTemplateColumns: 'repeat(12, 1fr)', gap: 32 }}>
-          <div style={{ gridColumn: '1 / span 7' }}>
-            <Eyebrow style={{ marginBottom: 12 }}>Registrations & Codes</Eyebrow>
-            <div className="smallcaps mute" style={{ display: 'flex', flexWrap: 'wrap', gap: '8px 24px' }}>
-              <span>SAM.gov</span>
-              <span>·</span>
-              <span>AIA|DC</span>
-              <span>·</span>
-              <span>NCARB</span>
-              <span>·</span>
-              <span>LEED AP</span>
-              <span>·</span>
-              <span>DSLBD CBE <span style={{ textTransform: 'none', letterSpacing: 0, fontStyle: 'italic' }}>(verifying)</span></span>
-              <span>·</span>
-              <span>NAICS 541310 · 541330 · 541320 · 541350 · 541410</span>
-            </div>
-          </div>
-          <div style={{ gridColumn: '9 / span 4', textAlign: 'right' }}>
-            <Eyebrow style={{ marginBottom: 12 }}>Procurement</Eyebrow>
-            <a href="#/contact" onClick={(e) => { e.preventDefault(); navigate('/contact'); }} className="tlink">
-              <span>Request SF-330 portfolio</span>
-              <span className="arrow">→</span>
+          {/* Center — giant red wordmark */}
+          <div style={{ textAlign: 'center' }}>
+            <a href="#/" onClick={(e) => { e.preventDefault(); navigate('/'); }} className="logo" style={{ alignItems: 'center' }}>
+              <span className="logo-word" style={{ fontSize: 'clamp(40px, 6vw, 72px)' }}>DURO</span>
+              <span className="logo-sub" style={{ fontSize: 'clamp(10px, 1.2vw, 14px)', letterSpacing: '0.5em' }}>Design Group</span>
             </a>
           </div>
-        </div>
 
-        <div style={{ marginTop: 32, paddingTop: 24, borderTop: '1px solid var(--duro-rule)', display: 'flex', flexWrap: 'wrap', justifyContent: 'space-between', gap: 16 }}>
-          <div className="smallcaps mute">© 2026 DURO Design Group, LLC — Washington, DC</div>
-          <div className="smallcaps mute">UEI & CAGE Code available on request</div>
+          {/* Right — address */}
+          <div className="body-m" style={{ lineHeight: 1.7, textAlign: 'right' }}>
+            <div>5112 11TH ST NE</div>
+            <div>Washington, DC</div>
+          </div>
+        </div>
+        <Rule />
+        <div style={{ display: 'flex', justifyContent: 'space-between', gap: 16, padding: '24px 0 0' }}>
+          <div className="smallcaps mute">© 2026 Duro Design Group</div>
+          <div className="smallcaps mute">All Rights Reserved</div>
         </div>
       </Shell>
     </footer>
   );
 }
 
-// ──── Page transition wrapper (animation disabled — iframe timeline paused) ────
+// ───── Loading screen — black, tagline + red wordmark, auto-dismisses ─────
+function Loader() {
+  const [gone, setGone] = useStateA(false);
+  const [removed, setRemoved] = useStateA(false);
+  useEffectA(() => {
+    // Show once per session so navigating back home doesn't re-trigger it.
+    if (sessionStorage.getItem('duro-loaded')) { setRemoved(true); return; }
+    const t1 = setTimeout(() => setGone(true), 1500);
+    const t2 = setTimeout(() => { setRemoved(true); sessionStorage.setItem('duro-loaded', '1'); }, 2150);
+    return () => { clearTimeout(t1); clearTimeout(t2); };
+  }, []);
+  if (removed) return null;
+  return (
+    <div className={`loader ${gone ? 'gone' : ''}`}>
+      <div className="loader-tag">Shaping intentions into built reality.</div>
+      <div className="loader-mark">
+        <span className="loader-word">DURO</span>
+        <span className="loader-sub">Design Group</span>
+      </div>
+    </div>
+  );
+}
+
+// ──── Page transition wrapper ────
 function PageFrame({ children, routeKey }) {
   return <div>{children}</div>;
 }
@@ -133,40 +115,32 @@ function App() {
   const route = useRoute();
   const [t, setTweak] = useTweaks(window.TWEAK_DEFAULTS);
 
-  // Apply theme tweaks
+  // Apply accent tweak. Canvas is black by default now (no night/warm classes).
   useEffectA(() => {
-    document.documentElement.style.setProperty('--duro-red', t.accent || '#E63027');
-    document.body.classList.toggle('duro-warm-paper', t.paperTone === 'warm-paper');
+    document.documentElement.style.setProperty('--duro-red', t.accent || '#F4291C');
     document.body.classList.toggle('duro-before-after', !!t.beforeAfter);
-    document.body.classList.add('duro-night');
-    // Notify dynamic subscribers (FeaturedProject, etc.)
     window.__tweaks = t;
     window.dispatchEvent(new CustomEvent('tweaks-changed', { detail: t }));
-  }, [t.accent, t.paperTone, t.beforeAfter]);
+  }, [t.accent, t.beforeAfter]);
 
-  // Enable scroll-reveal transitions ONLY if the host browser has a running
-  // animation timeline. Some preview iframes pause the timeline at t=0, which
-  // would leave opacity-0 content invisible forever; for those, content just
-  // appears instantly (the fx-on class never gets added).
+  // Enable scroll-reveal transitions only when the host browser has a running
+  // animation timeline (some preview iframes pause it at t=0).
   useEffectA(() => {
     const t0 = document.timeline?.currentTime ?? 0;
     requestAnimationFrame(() => {
       requestAnimationFrame(() => {
         const t1 = document.timeline?.currentTime ?? 0;
-        if (t1 > t0) {
-          document.documentElement.classList.add('fx-on');
-        }
+        if (t1 > t0) document.documentElement.classList.add('fx-on');
       });
     });
   }, []);
 
-  // Update document title
   useEffectA(() => {
     const titles = {
-      '/': 'DURO Design Group — Architecture · Engineering · Preservation',
+      '/': 'DURO Design Group — Shaping intentions into built reality',
       '/about': 'About — DURO Design Group',
       '/services': 'Services — DURO Design Group',
-      '/projects': 'Projects — DURO Design Group',
+      '/work': 'Work — DURO Design Group',
       '/contact': 'Contact — DURO Design Group',
     };
     document.title = titles[route] || 'DURO Design Group';
@@ -175,12 +149,12 @@ function App() {
   let Page = HomePage;
   if (route === '/about') Page = AboutPage;
   else if (route === '/services') Page = ServicesPage;
-  else if (route === '/projects') Page = ProjectsPage;
+  else if (route === '/work' || route === '/projects') Page = WorkPage;
   else if (route === '/contact') Page = ContactPage;
 
   return (
     <ProjectOverlayProvider>
-      <ScrollProgress />
+      <Loader />
       <ProjectCursor />
       <Header route={route} />
       <PageFrame routeKey={route}>
@@ -191,18 +165,10 @@ function App() {
       <TweaksPanel>
         <TweakSection label="Accent" />
         <TweakColor
-          label="DURO accent"
+          label="DURO red"
           value={t.accent}
-          options={['#E63027', '#C2241B', '#1B3A4B', '#171717']}
+          options={['#F4291C', '#E63027', '#C2241B', '#FF3B30']}
           onChange={(v) => setTweak('accent', v)}
-        />
-
-        <TweakSection label="Paper" />
-        <TweakRadio
-          label="Background"
-          value={t.paperTone}
-          options={['off-white', 'warm-paper']}
-          onChange={(v) => setTweak('paperTone', v)}
         />
 
         <TweakSection label="Showcase" />
@@ -214,9 +180,9 @@ function App() {
 
         <TweakSection label="Quick links" />
         <TweakButton label="Home" onClick={() => navigate('/')} />
-        <TweakButton label="About" onClick={() => navigate('/about')} />
         <TweakButton label="Services" onClick={() => navigate('/services')} />
-        <TweakButton label="Projects" onClick={() => navigate('/projects')} />
+        <TweakButton label="Work" onClick={() => navigate('/work')} />
+        <TweakButton label="About" onClick={() => navigate('/about')} />
         <TweakButton label="Contact" onClick={() => navigate('/contact')} />
       </TweaksPanel>
     </ProjectOverlayProvider>
