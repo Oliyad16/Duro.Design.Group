@@ -42,9 +42,11 @@
       display:block;
     }
     /* Show the whole video frame (no crop); letterbox on the black well.
-       Poster still image fills the frame so the still looks intentional. */
-    video { object-fit:contain; }
-    img.poster { object-fit:cover; }
+       Poster still image fills the frame so the still looks intentional.
+       Poster sits BEHIND the video so the video can crossfade in on top
+       while it buffers. */
+    img.poster { object-fit:cover; z-index:1; }
+    video { object-fit:contain; z-index:2; }
     .cap {
       position:absolute; right:14px; top:14px;
       display:flex; align-items:center; gap:6px;
@@ -100,7 +102,10 @@
       this._poster = document.createElement('img'); this._poster.className = 'poster'; this._poster.style.display = 'none';
       this._video = document.createElement('video');
       this._video.style.display = 'none';
+      this._video.style.opacity = '0';
+      this._video.style.transition = 'opacity 400ms ease';
       this._video.setAttribute('playsinline', '');
+      this._video.setAttribute('preload', 'auto');
       this._video.muted = true;
       this._video.loop = true;
       this._video.autoplay = true;
@@ -171,6 +176,10 @@
       this._hydrate();
     }
 
+    disconnectedCallback() {
+      if (this._io) { this._io.disconnect(); this._io = null; }
+    }
+
     // React-friendly: attributes (src/poster) often arrive a render tick AFTER
     // the element mounts, so connectedCallback alone misses them. Re-hydrate on
     // change — mirrors image-slot.js's attributeChangedCallback so author-set
@@ -199,10 +208,35 @@
         this._cap.classList.add('has-poster');
       }
 
-      // Only (re)set the video source if it actually changed.
-      if (desired && desired !== this._src) {
-        this._setSrc(desired, false);
+      // Only (re)set the video source if it actually changed. Defer the
+      // actual network fetch until the slot is at/near the viewport, so a
+      // page with several videos (Work grid, carousel) doesn't pull them all
+      // at once and starve the visible one's bandwidth. The poster/image
+      // behind it is already showing, so off-screen slots look complete.
+      if (desired && desired !== this._src && desired !== this._pendingSrc) {
+        this._pendingSrc = desired;
+        this._loadWhenVisible(desired);
       }
+    }
+
+    _loadWhenVisible(url) {
+      const start = () => {
+        if (this._pendingSrc !== url) return; // superseded
+        this._pendingSrc = null;
+        this._setSrc(url, false);
+      };
+      // No IO support, or already on screen → load now.
+      if (typeof IntersectionObserver === 'undefined') { start(); return; }
+      const r = this.getBoundingClientRect();
+      const vh = window.innerHeight || document.documentElement.clientHeight;
+      if (r.top < vh * 1.25 && r.bottom > -vh * 0.25) { start(); return; }
+      if (this._io) this._io.disconnect();
+      this._io = new IntersectionObserver((entries) => {
+        for (const e of entries) {
+          if (e.isIntersecting) { this._io.disconnect(); this._io = null; start(); }
+        }
+      }, { rootMargin: '300px 0px' }); // begin slightly before it scrolls in
+      this._io.observe(this);
     }
 
     _promptUrl() {
@@ -229,12 +263,35 @@
 
     _setSrc(url, persist) {
       this._src = url;
-      this._video.src = url;
-      this._video.style.display = 'block';
-      this._poster.style.display = 'none';
       this._cap.style.display = 'none';
       this._badge.style.display = 'block';
+
+      // Keep the poster visible underneath while the video buffers — the
+      // viewer sees the still frame instantly instead of a black box. The
+      // video element is mounted but transparent; it fades in only once it
+      // has enough data to play, so there's no flash of empty/black.
+      const poster = this.getAttribute('poster');
+      if (poster) {
+        if (this._poster.src !== poster) this._poster.src = poster;
+        this._poster.style.display = 'block';
+      }
+      this._video.style.display = 'block';
+      this._video.style.opacity = '0';
+
+      const reveal = () => {
+        this._video.style.opacity = '1';
+        // Drop the poster after the crossfade so it can't bleed through.
+        setTimeout(() => { if (this._src) this._poster.style.display = 'none'; }, 420);
+      };
+      // Fire on the first frame that's actually renderable.
+      this._video.addEventListener('loadeddata', reveal, { once: true });
+      this._video.addEventListener('playing', reveal, { once: true });
+
+      this._video.src = url;
+      // Nudge the browser to begin fetching/decoding right away.
+      try { this._video.load(); } catch {}
       this._video.play().catch(() => {});
+
       const id = this.getAttribute('id');
       if (persist && id) {
         try { localStorage.setItem('video-slot:' + id, url); } catch {}
