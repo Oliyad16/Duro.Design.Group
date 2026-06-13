@@ -2,6 +2,46 @@
 <html lang="en">
 <head>
 <meta charset="utf-8" />
+<!--
+  Base-path guard — MUST be the first thing in <head>, before any relative
+  <script>/<link>/asset reference is parsed.
+
+  Every script, image, and video on this page is referenced with a *relative*
+  path (e.g. "components.jsx", "assets/projects/.../hero.jpg"). Relative paths
+  resolve against the document's directory — but only when the page URL ends
+  in a trailing slash (".../Duro Group Website/"). If the page is reached
+  WITHOUT one (".../Duro Group Website"), the browser drops the last segment
+  and every relative path resolves one level too high → all 404 → black page,
+  no images, no video, no app. (This is exactly the "images aren't rendering"
+  symptom.)
+
+  Fix: derive the real directory of THIS document from its own URL and pin it
+  with <base>. Now relatives resolve correctly no matter how the page is
+  reached — root deploy, "/Duro Group Website/" subfolder, trailing slash or
+  not. document.currentScript.src would be null for inline scripts, so we read
+  location directly and normalise to a directory that always ends in "/".
+-->
+<script>
+(function () {
+  var loc = window.location;
+  var path = loc.pathname;
+  // If the path doesn't already point at a file (has no "." after the last
+  // "/"), treat it as a directory and ensure it ends in a slash. If it points
+  // at a file (…/index.html), strip back to its directory.
+  var lastSeg = path.substring(path.lastIndexOf('/') + 1);
+  var dir;
+  if (lastSeg === '' ) {
+    dir = path;                                   // already a directory "/foo/"
+  } else if (lastSeg.indexOf('.') !== -1) {
+    dir = path.substring(0, path.lastIndexOf('/') + 1); // strip "index.html"
+  } else {
+    dir = path + '/';                             // bare dir without slash "/foo" → "/foo/"
+  }
+  var base = document.createElement('base');
+  base.href = loc.origin + dir;
+  document.head.appendChild(base);
+})();
+</script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>DURO Design Group — Architecture · Engineering · Preservation</title>
 
