@@ -123,11 +123,10 @@ const PROJECT_BY_ID = Object.fromEntries(PROJECTS.map(p => [p.id, p]));
 // context (overlay lower-right). A missing slot falls through to the drop placeholder.
 const PROJECT_IMAGES = {
   'thurgood-marshall': {
-    hero:     'assets/projects/thurgood-marshall/hero.jpg',
-    card:     'assets/projects/thurgood-marshall/card.jpg',
-    detail:   'assets/projects/thurgood-marshall/detail.jpg',
-    context:  'assets/projects/thurgood-marshall/context.jpg',
-    archival: 'assets/projects/thurgood-marshall/archival.jpg', // WPA-era PS 103 schoolyard
+    hero:    'assets/projects/thurgood-marshall/hero.jpg',    // restored PS 103 exterior (client photo)
+    card:    'assets/projects/thurgood-marshall/card.jpg',    // glazed corridor (client photo)
+    detail:  'assets/projects/thurgood-marshall/detail.jpg',  // exhibition hall w/ Marshall portraits
+    context: 'assets/projects/thurgood-marshall/context.jpg', // lounge w/ "Happy Birthday" screen
   },
   'eastern-market': {
     hero:    'assets/projects/eastern-market/hero.jpg',    // 2010 Italianate facade + market tents
@@ -136,17 +135,15 @@ const PROJECT_IMAGES = {
     context: 'assets/projects/eastern-market/context.jpg', // entrance plaque detail
   },
   'aacw-museum': {
-    hero:     'assets/projects/aacw-museum/hero.jpg',
-    card:     'assets/projects/aacw-museum/card.jpg',
-    detail:   'assets/projects/aacw-museum/detail.jpg',   // restored Grimke with modern glass insertion
-    context:  'assets/projects/aacw-museum/context.jpg',
-    archival: 'assets/projects/aacw-museum/archival.jpg', // 1887 Phelps School B&W
+    hero:   'assets/projects/aacw-museum/hero.jpg',   // restored Grimke School exterior (client photo)
+    detail: 'assets/projects/aacw-museum/detail.jpg', // museum entrance archway (client photo)
   },
   'walter-pierce': {
-    hero:    'assets/projects/walter-pierce/hero.jpg',
-    card:    'assets/projects/walter-pierce/card.jpg',
-    detail:  'assets/projects/walter-pierce/detail.jpg',
-    context: 'assets/projects/walter-pierce/context.jpg',
+    hero:     'assets/projects/walter-pierce/hero.jpg',     // built Portland Loo, summer
+    card:     'assets/projects/walter-pierce/card.jpg',     // park + playground context
+    detail:   'assets/projects/walter-pierce/detail.jpg',   // Ancestors panel close-up (names)
+    context:  'assets/projects/walter-pierce/context.jpg',  // full Ancestors Pavilion row
+    archival: 'assets/projects/walter-pierce/archival.jpg', // "Welcome to the Ancestors Pavilion" sign
   },
   'harbor-bank': {
     hero:    'assets/projects/harbor-bank/hero.jpg',

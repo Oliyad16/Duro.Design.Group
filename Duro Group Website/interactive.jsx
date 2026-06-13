@@ -116,25 +116,47 @@ function ProjectOverlay({ idx, onClose, onPrev, onNext }) {
               </div>
             </div>
 
-            {/* Secondary media */}
-            <div className="grid" style={{ marginBottom: 64 }}>
-              <div style={{ gridColumn: '1 / span 7' }}>
-                <PhotoWell
-                  id={`ov-detail-${p.id}`}
-                  placeholder={`${p.title} — detail`}
-                  src={(window.PROJECT_IMAGES && window.PROJECT_IMAGES[p.id])?.detail}
-                  ratio="4/5"
-                />
-              </div>
-              <div style={{ gridColumn: '8 / span 5' }}>
-                <PhotoWell
-                  id={`ov-context-${p.id}`}
-                  placeholder={`${p.title} — context`}
-                  src={(window.PROJECT_IMAGES && window.PROJECT_IMAGES[p.id])?.context}
-                  ratio="4/5"
-                />
-              </div>
-            </div>
+            {/* Secondary media — every picture this project has.
+               Pull all registered image slots (detail, context, card,
+               archival, …), drop the hero (already shown up top) and any
+               duplicate src, then lay them out two-per-row. Projects with
+               more photos automatically get more rows; nothing is hard-coded
+               to two, so adding files to PROJECT_IMAGES shows up here. */}
+            {(() => {
+              const imgs = (window.PROJECT_IMAGES && window.PROJECT_IMAGES[p.id]) || {};
+              const heroSrc = imgs.hero;
+              // Preserve a sensible reading order, then append any other slots
+              // we don't know about by name so nothing is ever silently hidden.
+              const ordered = ['detail', 'context', 'card', 'archival'];
+              const slots = [
+                ...ordered.filter((k) => imgs[k]),
+                ...Object.keys(imgs).filter((k) => k !== 'hero' && !ordered.includes(k)),
+              ];
+              const gallery = slots
+                .map((slot) => ({ slot, src: imgs[slot] }))
+                .filter((x) => x.src && x.src !== heroSrc)
+                .filter((x, i, a) => a.findIndex((y) => y.src === x.src) === i);
+
+              if (gallery.length === 0) return null;
+
+              return (
+                <div className="grid" style={{ marginBottom: 64, rowGap: 'clamp(20px, 3vw, 40px)' }}>
+                  {gallery.map(({ slot, src }, i) => (
+                    <div
+                      key={slot}
+                      style={{ gridColumn: i % 2 === 0 ? '1 / span 7' : '8 / span 5' }}
+                    >
+                      <PhotoWell
+                        id={`ov-${slot}-${p.id}`}
+                        placeholder={`${p.title} — ${slot}`}
+                        src={src}
+                        ratio="4/5"
+                      />
+                    </div>
+                  ))}
+                </div>
+              );
+            })()}
 
             {/* Bottom nav */}
             <div style={{ marginTop: 80, paddingTop: 48, borderTop: '1px solid var(--duro-rule)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
