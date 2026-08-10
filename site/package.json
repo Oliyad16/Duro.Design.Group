@@ -1,0 +1,10 @@
+{
+  "name": "duro-design-group-site",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Duro Design Group portfolio site - static single-page site",
+  "scripts": {
+    "dev": "npx serve .",
+    "deploy": "vercel --prod"
+  }
+}

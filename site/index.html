@@ -1,0 +1,247 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Duro Design Group</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Fraunces:opsz,wght@9..144,300;9..144,400;9..144,500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/css/style.css"></head><body>
+
+<div id="splash" onclick="hideSplash()">
+ <div class="tag">Shaping intentions into built reality.</div>
+ <div class="lg"><img src="assets/images/img001.png" alt="DURO Design Group"></div>
+</div>
+
+<div class="wrap"><div class="nav">
+ <div class="logo" onclick="go('home')"><img src="assets/images/img002.png" alt="DURO Design Group"></div>
+ <div class="menu">
+  <a id="n-services" onclick="go('services')">SERVICES</a>
+  <a id="n-work" onclick="go('work')">WORK</a>
+  <a id="n-about" onclick="go('about')">ABOUT</a>
+  <a id="n-contact" onclick="go('contact')">CONTACT</a>
+ </div>
+</div></div><div class="rule"></div>
+
+<!-- HOME -->
+<div class="page on" id="home"><div class="wrap">
+ <div class="hhero">
+  <video id="hvid" muted loop playsinline autoplay preload="metadata"></video>
+  <div class="ph" id="hph">Hero image — stock placeholder, pending replacement</div>
+  <div class="cap" id="hcap"><b>EASTERN MARKET</b><span>WASHINGTON, D.C.</span></div>
+  <div class="clk"><svg class="ar" onclick="hstep(-1)" width="56" height="16" viewBox="0 0 56 16"><line x1="4" y1="8" x2="56" y2="8"/><polyline points="11,2 3,8 11,14"/></svg><span id="hcnt">01 / 06</span><svg class="ar" onclick="hstep(1)" width="56" height="16" viewBox="0 0 56 16"><line x1="0" y1="8" x2="52" y2="8"/><polyline points="45,2 53,8 45,14"/></svg></div>
+ </div>
+ <div class="herorule"></div>
+ <div class="hstate">
+  <h2 class="serif">Meaningful, <span class="red">inspired</span><br>design solutions for all.</h2>
+  <p>Good design is easy to promise and hard to deliver. We bring institutional-level rigor, technical precision, and design care to every project — a private residence, a neighborhood park, a civic building — regardless of scale or budget. That rigor doesn&rsquo;t change with the client, the community, or the scale. Serious design shouldn&rsquo;t be reserved for the few — it should hold up everywhere.</p>
+ </div>
+</div></div>
+
+<!-- SERVICES -->
+<div class="page" id="services"><div class="wrap">
+ <div class="titlebar"><h1>Services</h1></div>
+ <div class="svc">
+  <div>
+   <div class="blk">
+    <button class="svch" onclick="svcToggle('arch')"><h3>Architecture</h3><span class="svcsign" id="svcsign-arch">+</span></button>
+    <div class="tl">Spaces shaped around people, purpose, and place.</div>
+    <div class="svcbody" id="svcbody-arch">
+     <div class="ds">We design buildings, interiors, renovations, additions, and spatial experiences that support how people live, work, gather, and move. Our architectural work balances clarity, beauty, technical coordination, and long-term use. From early feasibility studies through construction administration, we stay close to the project at every phase, so the design intent that starts on paper is still legible in the finished space.</div>
+     <div class="lab">Selected capabilities</div>
+     <div class="cap">Feasibility Studies &amp; Existing Conditions Assessments<br>Space Planning &amp; Programming<br>Interior Architecture<br>Landscape Architecture<br>Construction Administration</div>
+    </div></div>
+   <div class="blk">
+    <button class="svch" onclick="svcToggle('eng')"><h3>Engineering</h3><span class="svcsign" id="svcsign-eng">+</span></button>
+    <div class="tl">Technical care that makes spaces safer, stronger, and more enduring.</div>
+    <div class="svcbody" id="svcbody-eng">
+     <div class="ds">We coordinate the systems that allow design to perform. MEP, structure, and civil are integrated early, in the same office and on the same drawings as the architecture, rather than handed off between separate firms after the fact. That coordination is what keeps a building's mechanical, structural, and site systems working together instead of working around each other once construction begins.</div>
+     <div class="lab">Selected capabilities</div>
+     <div class="cap">MEP Engineering<br>Structural Engineering<br>Civil Engineering</div>
+    </div></div>
+   <div class="blk">
+    <button class="svch" onclick="svcToggle('perm')"><h3>Permitting</h3><span class="svcsign" id="svcsign-perm">+</span></button>
+    <div class="tl">Government-caliber guidance for projects of every scale.</div>
+    <div class="svcbody" id="svcbody-perm">
+     <div class="ds">We help projects move through review, permitting, and agency coordination with clarity. Whether the project is public or private, we bring discipline to the approval process so design intent can move forward. We track requirements across the agencies a project touches and manage submissions and responses directly, so approvals move on schedule instead of stalling on paperwork the design team could have anticipated.</div>
+     <div class="lab">Selected capabilities</div>
+     <div class="cap">Building Permits<br>Stormwater, Utility &amp; Tree Permits<br>Department of Transportation Permits<br>Permit Expediting</div>
+    </div></div>
+  </div>
+  <div><p class="quote">From first <span class="red">intention</span> to final detail, we guide ideas into elegant, enduring places shaped for people and <span class="red">built</span> with discipline.</p></div>
+ </div>
+</div></div>
+
+<!-- WORK INDEX -->
+<div class="page" id="work"><div class="wrap">
+ <div class="titlebar"><h1>Work</h1></div>
+
+ <h3 class="work-sec">Featured Work</h3>
+ <div class="grid">
+  <div class="tile live" onclick="openProj('sinbada')">
+   <div class="img" style="background-image:url('assets/images/img003.jpg')"></div>
+   <div class="meta"><div class="nm">The Sinbada Residence</div></div></div>
+  <div class="tile live" onclick="openProj('harbor')">
+   <div class="img" style="background-image:url('assets/images/img004.jpg')"></div>
+   <div class="meta"><div class="nm">The Harbor Bank of Maryland</div></div></div>
+  <div class="tile live" onclick="openProj('hampton')">
+   <div class="img" style="background-image:url('assets/images/img005.jpg')"></div>
+   <div class="meta"><div class="nm">The Hampton Residence</div></div></div>
+  <div class="tile live" onclick="openProj('walter')">
+   <div class="img" style="background-image:url('assets/images/img006.jpg')"></div>
+   <div class="meta"><div class="nm">Walter Pierce Park</div></div></div>
+ </div>
+
+ <h3 class="work-sec">All Work</h3>
+ <div class="all-work">
+
+  <button class="wsecbtn" onclick="workToggle('pub')">Public<span class="wsign" id="wsign-pub">+</span></button>
+  <div class="wsecbody" id="wsecbody-pub">
+   <div class="work-list">
+<div class="work-row work-head"><span class="wn"></span><span class="wl">Location</span><span class="wr">Role</span><span class="wy">Completion</span></div>
+    <div class="work-row"><span class="wn">KC Lewis Park Upgrade</span><span class="wl">Washington, D.C.</span><span class="wr">Lead Architect/Engineer</span><span class="wy">In Progress</span></div>
+    <div class="work-row"><span class="wn">Walter Pierce Park</span><span class="wl">Washington, D.C.</span><span class="wr">Lead Architect/Engineer</span><span class="wy">2024</span></div>
+    <div class="work-row"><span class="wn">Eastern Market Preservation</span><span class="wl">Washington, D.C.</span><span class="wr">Lead Architect/Engineer</span><span class="wy">2024</span></div>
+    <div class="work-row"><span class="wn">HL Mooney Water Reclamation Facility</span><span class="wl">Washington, D.C.</span><span class="wr">Lead Architect/Engineer</span><span class="wy">2023</span></div>
+    <div class="work-row"><span class="wn">IMF Garage Improvements</span><span class="wl">Washington, D.C.</span><span class="wr">Lead Architect</span><span class="wy">2023</span></div>
+    <div class="work-row"><span class="wn">Girard Street Shelter — Upgrades</span><span class="wl">Washington, D.C.</span><span class="wr">Lead Architect/Engineer</span><span class="wy">2023</span></div>
+   </div>
+  </div>
+
+  <button class="wsecbtn" onclick="workToggle('com')">Commercial &amp; Institutional<span class="wsign" id="wsign-com">+</span></button>
+  <div class="wsecbody" id="wsecbody-com">
+   <div class="work-list">
+<div class="work-row work-head"><span class="wn"></span><span class="wl">Location</span><span class="wr">Role</span><span class="wy">Completion</span></div>
+    <div class="work-row"><span class="wn">Crab World — Kitchen Upgrade</span><span class="wl">Washington, D.C.</span><span class="wr">Lead Architect/Engineer</span><span class="wy">In Progress</span></div>
+    <div class="work-row"><span class="wn">1214 U St SE — Inpatient Clinic</span><span class="wl">Washington, D.C.</span><span class="wr">Lead Architect/Engineer</span><span class="wy">In Progress</span></div>
+    <div class="work-row"><span class="wn">The Harbor Bank of Maryland — HQ</span><span class="wl">Baltimore, MD</span><span class="wr">Consulting Architect</span><span class="wy">In Progress</span></div>
+    <div class="work-row"><span class="wn">The Harbor Bank of Maryland — Park Heights</span><span class="wl">Baltimore, MD</span><span class="wr">Consulting Architect</span><span class="wy">In Progress</span></div>
+    <div class="work-row"><span class="wn">St. Gabriel Ethiopian Orthodox Church</span><span class="wl">Manassas, VA</span><span class="wr">Lead Architect/Engineer</span><span class="wy">In Progress</span></div>
+    <div class="work-row"><span class="wn">Aatrix Environmental — Office Renovation</span><span class="wl">Laurel, MD</span><span class="wr">Lead Architect</span><span class="wy">2025</span></div>
+    <div class="work-row"><span class="wn">Mirna's Child Care Services</span><span class="wl">Hyattsville, MD</span><span class="wr">Lead Architect</span><span class="wy">2025</span></div>
+    <div class="work-row"><span class="wn">African American Civil War Museum</span><span class="wl">Washington, D.C.</span><span class="wr">Consulting Architect</span><span class="wy">2023</span></div>
+    <div class="work-row"><span class="wn">PS 103 Thurgood Marshall Amenity Center</span><span class="wl">Baltimore, MD</span><span class="wr">Consulting Architect</span><span class="wy">2023</span></div>
+   </div>
+  </div>
+
+  <button class="wsecbtn" onclick="workToggle('res')">Residential<span class="wsign" id="wsign-res">+</span></button>
+  <div class="wsecbody" id="wsecbody-res">
+   <div class="work-list">
+<div class="work-row work-head"><span class="wn"></span><span class="wl">Location</span><span class="wr">Role</span><span class="wy">Completion</span></div>
+    <div class="work-row"><span class="wn">The Sinbada Residence</span><span class="wl">Washington, D.C.</span><span class="wr">Lead Architect/Engineer</span><span class="wy">In Progress</span></div>
+    <div class="work-row"><span class="wn">1407 Corcoran St NW</span><span class="wl">Washington, D.C.</span><span class="wr">Lead Architect/Engineer</span><span class="wy">In Progress</span></div>
+    <div class="work-row"><span class="wn">The Hampton Residence</span><span class="wl">Chesapeake Shore, MD</span><span class="wr">Lead Architect/Engineer</span><span class="wy">In Progress</span></div>
+    <div class="work-row"><span class="wn">3363 Denver St</span><span class="wl">Washington, D.C.</span><span class="wr">Lead Architect/Engineer</span><span class="wy">In Progress</span></div>
+    <div class="work-row"><span class="wn">1108 48th Pl NE</span><span class="wl">Washington, D.C.</span><span class="wr">Lead Architect/Engineer</span><span class="wy">In Progress</span></div>
+    <div class="work-row"><span class="wn">2825 Rittenhouse St NW</span><span class="wl">Washington, D.C.</span><span class="wr">Lead Architect/Engineer</span><span class="wy">2026</span></div>
+    <div class="work-row"><span class="wn">1431 A St SE</span><span class="wl">Washington, D.C.</span><span class="wr">Lead Architect/Engineer</span><span class="wy">2025</span></div>
+    <div class="work-row"><span class="wn">5906 Berwyn Dr</span><span class="wl">Hyattsville, MD</span><span class="wr">Lead Architect/Engineer</span><span class="wy">2025</span></div>
+    <div class="work-row"><span class="wn">7119 16th St NW</span><span class="wl">Washington, D.C.</span><span class="wr">Lead Architect</span><span class="wy">2025</span></div>
+    <div class="work-row"><span class="wn">12520 Van Brady Rd</span><span class="wl">Upper Marlboro, MD</span><span class="wr">Lead Architect/Engineer</span><span class="wy">2024</span></div>
+    <div class="work-row"><span class="wn">4310 13th St</span><span class="wl">Washington, D.C.</span><span class="wr">Lead Architect</span><span class="wy">2023</span></div>
+    <div class="work-row"><span class="wn">14515 Bentley Dr</span><span class="wl">Burtonsville, MD</span><span class="wr">Lead Architect/Engineer</span><span class="wy">2023</span></div>
+   </div>
+  </div>
+
+ </div>
+</div></div>
+
+<!-- WORK DETAIL -->
+<div class="page" id="workdetail"><div class="wrap">
+ <a class="back" onclick="go('work')">← Work</a>
+ <div class="dhead"><div><small id="dkick">The Harbor Bank of Maryland</small><h2 id="dtitle">Headquarters Renovation</h2></div><div class="pill" id="dpill">● In Progress · 2025</div></div>
+ <div class="credit" id="dcredit"><span><b>Baltimore, MD</b></span><span>Consulting Architect <b>(design + documentation)</b></span><span><b>Commercial</b></span><span><b>2025</b></span><span><b>5,000 SF</b></span></div>
+ <div class="dcontent">
+  <div class="dhero"><img id="hero-img" src="" alt=""><video id="hero-vid" muted loop playsinline autoplay preload="metadata"></video><span id="hero-chip" class="chip"></span></div>
+  <p class="narr" id="narr">A 5,000&nbsp;SF renovation of The Harbor Bank of Maryland&rsquo;s Baltimore headquarters, establishing a brand and spatial standard to guide the institution&rsquo;s future branch renovations. Duro developed and documented the design and produced the project renderings — opening the floor plate for natural light and transparency, introducing flexible meeting space and integrated technology, and carrying the bank&rsquo;s identity through material and environmental graphics.</p>
+  <div class="gdivider"></div>
+  <div class="gallery" id="gallery"></div>
+ </div>
+</div></div>
+
+<!-- ABOUT -->
+<div class="page" id="about"><div class="wrap">
+ <div class="titlebar"><h1>About</h1></div>
+ <div class="svc about">
+  <div>
+
+   <div class="blk">
+    <button class="svch" onclick="svcToggle('bring')"><h3>What we bring</h3><span class="svcsign" id="svcsign-bring">+</span></button>
+    <div class="tl">How intention becomes built reality.</div>
+    <div class="svcbody" id="svcbody-bring">
+     <div class="ds">At Duro Design Group, how we translate intention into built reality shapes everything we do. We believe good design begins long before a drawing is produced — through listening, observation, and the discipline to understand what a project is asking from every side: the client, the end user, the community, the site, the budget, the agencies, and the people who will live with the outcome. Our practice is rooted in presence, clarity, and care.</div>
+     <div class="ds">We see design as both a creative and civic act. Whether we are shaping a home, a cultural place, a workplace, a public park, or a civic environment, our work is measured by how well it serves people. Context, code, systems, accessibility, durability, and craft are not obstacles to beauty; they are the conditions through which meaningful design becomes real.</div>
+     <div class="ds">Duro was founded to bring institutional-level design care back to everyday life. The discipline often reserved for public work — clear communication, technical precision, agency fluency, documentation, and accountability — belongs in homes, small businesses, cultural spaces, civic projects, and the public realm. We pair architectural imagination with engineering discipline and collaborative delivery so clients of all kinds can access serious design without losing warmth, humanity, or trust.</div>
+    </div>
+   </div>
+
+   <div class="blk">
+    <button class="svch" onclick="svcToggle('sector')"><h3>Public Sector</h3><span class="svcsign" id="svcsign-sector">+</span></button>
+    <div class="tl">Institutional-level care for public and civic work.</div>
+    <div class="svcbody" id="svcbody-sector">
+     <div class="ds">Public work carries a responsibility beyond the object itself. It must serve communities, respect public resources, move through agency review, meet technical standards, and remain useful long after construction is complete. We approach public-sector work with the clarity, coordination, and care required when design becomes part of the public realm — understanding that these projects are shaped by many voices: clients, agencies, consultants, contractors, end users, and the communities who will live with the outcome.</div>
+     <div class="ds">Public-sector design is rarely shaped by a single need. It is shaped by existing buildings, accessibility, code, budget, procurement, maintenance, schedule, public expectation, and long-term civic use. We bring those realities into focus early, helping teams clarify what matters, align priorities, and establish a path that can move from intention to execution without losing sight of purpose. Our role is not only to produce drawings, but to steward the intent behind them.</div>
+    </div>
+   </div>
+
+   <div class="blk">
+    <button class="svch" onclick="svcToggle('team')"><h3>Who we are</h3><span class="svcsign" id="svcsign-team">+</span></button>
+    <div class="tl">A small, hands-on team of architects and engineers.</div>
+    <div class="svcbody" id="svcbody-team">
+     <div class="ds">Duro Design Group is led by a small team of architects and engineers who work directly on every project, from first conversation through construction closeout. Profiles below — pending.</div>
+     <div class="press">
+      <div class="t">Headshot — Pending</div>
+      <div class="t">Headshot — Pending</div>
+      <div class="t">Headshot — Pending</div>
+     </div>
+    </div>
+   </div>
+
+   <div class="blk">
+    <button class="svch" onclick="svcToggle('press')"><h3>Press</h3><span class="svcsign" id="svcsign-press">+</span></button>
+    <div class="tl">Recognition and coverage, updated as it becomes available.</div>
+    <div class="svcbody" id="svcbody-press">
+     <div class="press real">
+      <a class="pcard" href="https://www.wusa9.com/article/news/community/walter-pierce-park-ancestors-pavilion-burial-ground-history/65-8c6fcba6-0fb9-46d0-8e7b-bdb97147f197" target="_blank" rel="noopener">
+       <span class="outlet">WUSA9</span>
+       <span class="headline">Ancestors Pavilion at Walter Pierce Park honors over 8,400 people buried there</span>
+       <span class="proj">Project: Walter Pierce Park — Ancestors Pavilion</span>
+       <span class="go">Read the story →</span>
+      </a>
+      <a class="pcard" href="https://www.nbcwashington.com/video/news/local/dcs-african-american-civil-war-museum-moves-into-permanent-home/3873772/" target="_blank" rel="noopener">
+       <span class="outlet">NBC4 Washington</span>
+       <span class="headline">DC&rsquo;s African American Civil War Museum moves into permanent home</span>
+       <span class="proj">Project: African American Civil War Museum</span>
+       <span class="go">Watch the segment →</span>
+      </a>
+     </div>
+    </div>
+   </div>
+
+  </div>
+  <div><p class="quote">Good design begins long before a drawing is produced — <span class="red">rooted</span> in presence, clarity, and <span class="red">care</span> for everyone a project will serve.</p></div>
+ </div>
+</div></div>
+
+
+<!-- CONTACT -->
+<div class="page" id="contact"><div class="wrap">
+ <div class="titlebar"><h1>Contact</h1></div>
+ <div class="contact">
+  <div><p class="lead">Let&rsquo;s discuss the <span class="red">possibilities</span>.</p></div>
+  <div class="form">
+   <div class="row"><label>Name</label><input class="ln" type="text" id="f-name"></div>
+   <div class="row"><label>Email</label><input class="ln" type="email" id="f-email"></div>
+   <div class="row"><label>Company</label><input class="ln" type="text" id="f-company"></div>
+   <div class="row"><label>Project Type</label><input class="ln" type="text" id="f-type"></div>
+   <div class="row"><label>Message</label><textarea class="ln" id="f-msg" style="height:90px"></textarea></div>
+   <a class="send" href="mailto:info@durodesign.group" onclick="return sendForm()">SEND MESSAGE&nbsp;&nbsp;→</a>
+  </div>
+ </div>
+</div></div>
+
+<div class="wrap footwrap"><div class="foot">
+ <div class="c">info@durodesign.group<br>202-491-4948</div>
+ <div class="fl"><img src="assets/images/img007.png" alt="DURO Design Group"></div>
+ <div class="c r">5112 11TH ST NE<br>Washington, DC</div>
+</div><div class="copy"><span>© 2026 Duro Design Group</span><span>All Rights Reserved</span></div></div>
+
+<script src="assets/js/script.js"></script></body></html>
