@@ -1,12 +1,26 @@
 {
+  "cleanUrls": true,
+  "trailingSlash": false,
+  "redirects": [
+    {
+      "source": "/Duro%20Group%20Website/:path*",
+      "destination": "/",
+      "permanent": false
+    },
+    {
+      "source": "/Duro Group Website/:path*",
+      "destination": "/",
+      "permanent": false
+    }
+  ],
   "rewrites": [
     {
       "source": "/",
-      "destination": "/Duro Group Website/index.html"
+      "destination": "/site/index.html"
     },
     {
       "source": "/(.*)",
-      "destination": "/Duro Group Website/$1"
+      "destination": "/site/$1"
     }
   ]
 }
